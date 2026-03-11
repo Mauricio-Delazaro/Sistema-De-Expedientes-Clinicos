@@ -17,7 +17,7 @@
 -   **Historia Clínica Especializada:** El interrogatorio debe adaptarse a la "materia del psicólogo" e incluir antecedentes heredo-familiares y personales patológicos.
 -   **Consumo de Sustancias:** Se debe indagar obligatoriamente sobre el uso y dependencia del **tabaco, alcohol y otras sustancias psicoactivas**.
 -   **Estado Mental:** En casos de urgencias o internamiento psiquiátrico, la nota debe contener un resumen de la exploración del **estado mental** del paciente.
--   **Exploración Específica:** Se registra la información técnica propia de la psicología (conducta, procesos cognitivos, etc.).
+-   **Exploración Específica:** Se registra la información técnica propia de la materia del profesional de psicología (conducta, procesos cognitivos, etc.) esto otorga flexibilidad para documentar aspectos técnicos propios de la salud mental.
 
 4. ### Registro de Sesiones (Notas de Evolución)
 -   **Evolución del cuadro clínico:** Descripción de los cambios en el estado del paciente y, en su caso, actualizaciones sobre el **abuso o dependencia de sustancias**.
@@ -25,5 +25,5 @@
 -   **Sugerencias y Plan:** Indicaciones psicoterapéuticas, metas de la sesión y plan de manejo.
 -   **Autoría:** Cada nota debe incluir fecha, hora y el nombre completo con la **firma (autógrafa o electrónica)** del psicólogo para asegurar la integridad y trazabilidad del registro.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTUxMzI4MDc5MCwyODM5NzQ4OV19
+eyJoaXN0b3J5IjpbLTU0ODQ0ODA1NywyODM5NzQ4OV19
 -->
