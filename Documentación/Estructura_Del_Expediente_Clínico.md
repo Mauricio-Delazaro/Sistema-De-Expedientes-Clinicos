@@ -1,7 +1,6 @@
+****Estructura del expediente clínico****
 
-
-
-> Written with [StackEdit](https://stackedit.io/)
+**El expediente clínico deberá contener la siguiente información mínima para cada paciente:**
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTY5NjkyNDA5OF19
+eyJoaXN0b3J5IjpbLTE3MjMwNzI2OTddfQ==
 -->
