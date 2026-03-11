@@ -10,7 +10,7 @@
 
 2. ### Información Administrativa y de Privacidad
 -   **Aviso de Privacidad (Datos Sensibles):** El sistema debe informar que se tratarán **datos personales sensibles** (aquellos que afectan el estado de salud presente o futuro, creencias morales o filosóficas, vida afectiva y familiar)
--   **Consentimiento Informado:** Es obligatorio para **investigación clínica** en seres humanos o procedimientos que el psicólogo considere de alto riesgo.
+-   **Consentimiento Informado:** Es obligatorio para investigación clínica en seres humanos o procedimientos que el psicólogo considere de alto riesgo.
 -   **Acuerdos de confidencialidad:** Se debe garantizar que todo el personal que intervenga en el tratamiento guarde **secreto profesional**, obligación que subsiste aun después de finalizar la relación con la institución.
 
 3. ### Información Clínica
@@ -25,5 +25,5 @@
 -   **Sugerencias y Plan:** Indicaciones psicoterapéuticas, metas de la sesión y plan de manejo.
 -   **Autoría:** Cada nota debe incluir fecha, hora y el nombre completo con la firma (autógrafa o electrónica) del psicólogo para asegurar la integridad y trazabilidad del registro.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDM0NjM0Njk1LDI4Mzk3NDg5XX0=
+eyJoaXN0b3J5IjpbLTExMjkwNzkzNTMsMjgzOTc0ODldfQ==
 -->
