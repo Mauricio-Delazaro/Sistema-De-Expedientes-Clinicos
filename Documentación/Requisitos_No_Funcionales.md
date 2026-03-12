@@ -5,7 +5,6 @@
 El sistema deberá diseñarse para que la "eliminación" de pacientes no implique la eliminación completa de sus datos en la base de datos, por lo que será archivado, preservando el expediente clínico del paciente conservando: organizacón visual en el manejo de pacientes activos  del terapeuta y un expediente archivado y listo en caso de regreso del paciente.
 
 **Restricciones:**
-
 - No se permitirá la eliminación permanente de expedientes clínicos desde la interfaz del sistema, este mismo solo será agregado a archivación.
 - El diseño deberá tener un atributo de estado (activo/archivado) con el fin de mantener separados los pacientes activos de los que ya fueron archivados.
 - Los pacientes archivados no deberán aparecer en listados activos, por lo que maneja una lista de pacientes activos y otra la cual será de los pacientes archivados.
@@ -19,23 +18,23 @@ El sistema deberá diseñarse para que la "eliminación" de pacientes no impliqu
 
 ---
 
-### RNF - 02 Aplicación obligatoria de políticas de autorización
+### RNF - 02 Control de acceso a expedientes clínicos basado en atributos
+**Requisito:** El sistema deberá restringir el acceso a expedientes clínicos únicamente a usuarios con asignación válida al expediente correspondiente.
 
-**Requisito:** Aplicación de controles de autorización en el backend.
-
-**Descripción:**
-El sistema deberá implementar controles de autorización en el backend para garantizar que únicamente los usuarios con permisos adecuados puedan ejecutar cada operación disponible en el sistema, independientemente de las restricciones de la interfaz de usuario.
+**Descripción:** 
+Es de importancia mantener la confidencialidad de los expedientes para evitar el acceso, divulgación o consulta indebida de datos clínicos y personales, garantizando el cumplimiento de la _Norma Oficial Mexicana  NOM-024-SSA3-2010_. Para ello, se usará el framework _Java: Spring Security_ como mecanismo de seguridad para controlar la autorización antes de la ejecución de cada operación. Asimismo, se adoptará un enfoque _ABAC (attribute-based access control)_ dado que el acceso a los expedientes no depende únicamente del rol del usuario (terapeuta), sino de atributos específicos de este, como la asignación registrada entre el terapeuta y el expediente clínico. Por lo tanto, se definen las siguientes reglas de autorización:
+- Se permitirá la consulta y modificación de expedientes únicamente cuando el terapeuta se encuentre asignado al identificador del expediente correspondiente.
+- Se permitirá registrar nuevas sesiones clínicas únicamente a terapeutas asignados a dicho expediente.
 
 **Restricciones:**
-- Todas las operaciones del sistema deberán validar los permisos del usuario autenticado en el backend.
-- Las restricciones de acceso no deberán depender únicamente de la interfaz de usuario.
-- El acceso directo a rutas o endpoints no autorizados deberá ser bloqueado por el servidor.
+- La autorización debe hacerse antes de la ejecución de cualquier operación que conlleve tanto la consulta como modificación de los expedientes.
+- Únicamente el rol permitido para interactuar con los expedientes será el terapeuta.
 
 **Criterios de aceptación:**
+- Cuando el usuario solicite consultar un expediente asignado a su identificador, el sistema deberá permitir su visualización.
+- Si un usuario intenta acceder a un expediente que no esté asignado a su identificador, el sistema deberá denegar el acceso.
+- Toda operación que implique tanto el acceso como la modificación de expedientes deberá validar las reglas de autorización antes de ejecutar la acción solicitada.
 
-- El backend valida el rol o permisos del usuario antes de ejecutar cualquier operación protegida.
-- Las solicitudes a endpoints no autorizados son rechazadas por el servidor.
-- Las restricciones de acceso se aplican incluso si el usuario intenta acceder directamente a una ruta mediante URL.
 ---
 
 ### RNF - 03 Aislamiento de datos clínicos por asignación
