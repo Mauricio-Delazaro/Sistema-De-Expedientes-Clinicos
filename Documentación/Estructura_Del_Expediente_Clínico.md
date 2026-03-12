@@ -51,7 +51,3 @@
 
 A través de la consulta en el sitio web del Diario Oficial de la Federación identificamos como las NOMs pertinentes a la **NOM-004-SSA3-2012** para el expediente clínico y la **NOM-024-SSA3-2010** para sistemas de información en salud y expediente clínico electrónico.
 También, debido a la naturaleza del sistema al manejar datos personales sensibles, se tomó en cuenta la **Ley Federal de Protección de Datos Personales en Posesión de los Particulares** que establece obligaciones para el manejo de los mismos y **Validez y confiabilidad del estudio socioecnómico** por la UNAM para detectar los variables a evaluar en una encuesta-socioeconómica.
-
-<!--stackedit_data:
-eyJoaXN0b3J5IjpbLTExMjkwNzkzNTMsMjgzOTc0ODldfQ==
--->
