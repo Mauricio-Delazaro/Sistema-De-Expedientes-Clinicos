@@ -1,41 +1,4 @@
-### RNF - 01 Seguridad del mecanismo de autenticación por código
-**Requisito:** Seguridad del mecanismo de autenticación mediante código OTP.
-
-**Descripción:**
-El sistema deberá implementar el mecanismo de autenticación mediante código de un solo uso (OTP) definido en el RF-01, garantizando que dichos códigos sean generados, almacenados y validados de forma segura.
-
-**Restricciones:**
-- El código deberá tener una vigencia limitada de 5 a 10 minutos desde su generación.
-- Cada código OTP podrá utilizarse una sola vez para completar la autenticación.
-- El código OTP no deberá almacenarse en texto plano en la base de datos.
-- La generación del código deberá utilizar un mecanismo de generación pseudoaleatoria adecuado para fines de seguridad.
-
-**Criterios de aceptación:**
-- El sistema genera códigos OTP con longitud de 6 caracteres.
-- El sistema invalida automáticamente cualquier código marcado como utilizado con anterioridad.
-- El código no se almacena en texto plano, sino mediante una función hash criptográfica.
-
----
-
-### RNF - 02 Protección contra intentos de autenticación no autorizados
-**Requisito:** Limitación de intentos fallidos de autenticación.
-
-**Descripción:**
-El sistema deberá implementar mecanismos de protección contra intentos repetidos de validación del código OTP definido en el RF-01, con el objetivo de reducir el riesgo de ataques de fuerza bruta durante el proceso de autenticación.
-
-**Restricciones:**
-- El sistema deberá limitar el número de intentos fallidos de validación de un código OTP.
-- El sistema deberá aplicar un bloqueo temporal del proceso de autenticación tras superar el límite de intentos fallidos.
-
-**Criterios de aceptación:**
-- El sistema permite un máximo de 5 intentos fallidos de validación por cada código OTP generado.
-- Al superar el límite de intentos fallidos, el código OTP se marca como inválido o bloqueado.
-- El sistema impide nuevos intentos de autenticación durante un período mínimo de 10 minutos después de superar el límite.
-- Una vez finalizado el período de bloqueo, el usuario puede solicitar un nuevo código OTP para iniciar nuevamente el proceso de autenticación.
-
----
-
-### RNF - 03 Conservación de expedientes clínicos
+### RNF - 01 Conservación de expedientes clínicos
 **Requisito:** Preservación en lugar de eliminación física de pacientes
 
 **Descripción:**
@@ -54,7 +17,7 @@ El sistema deberá diseñarse para que la "eliminación" de pacientes no impliqu
 
 ---
 
-### RNF - 04 Aplicación obligatoria de políticas de autorización
+### RNF - 02 Aplicación obligatoria de políticas de autorización
 
 **Requisito:** Aplicación de controles de autorización en el backend.
 
@@ -73,7 +36,7 @@ El sistema deberá implementar controles de autorización en el backend para gar
 - Las restricciones de acceso se aplican incluso si el usuario intenta acceder directamente a una ruta mediante URL.
 ---
 
-### RNF - 05 Aislamiento de datos clínicos por asignación
+### RNF - 03 Aislamiento de datos clínicos por asignación
 
 **Requisito:** Aislamiento de información clínica entre terapeutas.
 
@@ -92,7 +55,7 @@ El sistema deberá garantizar el aislamiento de los expedientes clínicos median
 
 ---
 
-### RNF - 06 Menú dinámico basado en el rol del usuario
+### RNF - 04 Menú dinámico basado en el rol del usuario
 
 **Requisito:** Menú dinámico basado en el rol del usuario
 
@@ -108,3 +71,6 @@ El sistema deberá diseñarse para que la interfaz muestre opciones de navegaci�
 - Terapeutas no visualizan opciones administrativas en el menú.
 - Administradores visualizan el panel/opciones de gestión correspondientes.
 - Si un usuario intenta ejecutar una acción no permitida fuera del menú, el backend la rechaza.
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbLTQzNjk4MDVdfQ==
+-->

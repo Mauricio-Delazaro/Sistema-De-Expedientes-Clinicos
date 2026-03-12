@@ -1,22 +1,4 @@
-### RF - 01 Autenticación mediante código de un solo uso
-
-**Requisito:** Inicio de sesión mediante código OTP.
-
-**Descripción:**
-El sistema deberá permitir que terapeutas y administradores inicien sesión mediante un código de un solo uso enviado al correo electrónico registrado en el sistema.
-
-**Restricciones:**
-- Solo usuarios previamente registrados pueden solicitar un código de acceso.
-- El código debe enviarse al correo asociado al usuario.
-
-**Criterios de aceptación:**
-- El usuario puede solicitar un código de acceso desde la interfaz de inicio de sesión.
-- El sistema envía un código al correo electrónico registrado.
-- El usuario puede ingresar el código recibido para autenticarse en el sistema.
-
----
-
-### RF - 02 Consulta de pacientes
+  ### RF - 01 Consulta de pacientes
 
 **Requisito:** Consulta de pacientes registrados.
 
@@ -34,7 +16,7 @@ El sistema deberá permitir a los usuarios consultar los pacientes registrados e
 
 ---
 
-### RF - 03 Edición de expediente clínico
+### RF - 02 Edición de expediente clínico
 
 **Requisito:** Edición de expediente clínico.
 
@@ -53,7 +35,7 @@ El sistema deberá permitir actualizar la información clínica del expediente d
 
 ---
 
-### RF - 04 Registro de sesiones psicológicas
+### RF - 03 Registro de sesiones psicológicas
 
 **Requisito:** Registro de sesiones psicológicas.
 
@@ -69,7 +51,7 @@ El sistema deberá permitir registrar sesiones psicológicas asociadas a un paci
 
 ---
 
-### RF - 05 Visualización operativa de expedientes
+### RF - 04 Visualización operativa de expedientes
 
 **Requisito:** Visualización operativa para administradores.
 
@@ -87,7 +69,7 @@ El sistema deberá permitir que los administradores consulten información opera
 
 ---
 
-### RF - 06 Asignación de pacientes a terapeutas
+### RF - 05 Asignación de pacientes a terapeutas
 
 **Requisito:** Asignación de pacientes.
 
@@ -103,7 +85,7 @@ El sistema deberá permitir asignar pacientes a terapeutas responsables de su at
 
 ---
 
-### RF - 07 Navegación del sistema mediante menú
+### RF - 06 Navegación del sistema mediante menú
 
 **Requisito:** Navegación mediante menú del sistema.
 
@@ -116,3 +98,25 @@ El sistema deberá proporcionar un menú de navegación para acceder a las difer
 **Criterios de aceptación:**
 - El usuario puede navegar entre las funcionalidades del sistema.
 - El menú muestra únicamente opciones disponibles para el rol del usuario.
+
+---
+
+### RF - 07 Registro de expediente clínico:
+
+**Requisito:** Registro de los expedientes clínicos
+
+**Descripción:** 
+El sistema deberá permitir el registro y almacenaje de expedientes por paciente siguiendo las normativas y leyes pertinentes.
+
+**Restricciones:**
+- Cada paciente registrado deberá contar un expediente.
+- Solo los terapeutas autorizados podrán acceder a la información clínica respectiva.
+- El expediente deberá contar con los campos señalados por las normativas y leyes pertinentes.
+
+**Criterios de aceptación:**
+- El sistema crea un expediente por paciente.
+- El expediente cuenta con la información clínica requerida
+- El expediente solo puede ser consultado por el terapeuta asignado.
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbMTIyNzk1OTg4NF19
+-->
