@@ -2,7 +2,7 @@
 **Requisito:** Preservación en lugar de eliminación total de pacientes en el sistema.
 
 **Descripción:**
-El sistema deberá diseñarse para que la "eliminación" de pacientes no implique la eliminación completa de sus datos en la base de datos, por lo que será archivado, preservando el expediente clínico del paciente conservando: organizacón visual en el manejo de pacientes activos  del terapeuta y un expediente listo en caso de regreso del paciente.
+El sistema deberá diseñarse para que la "eliminación" de pacientes no implique la eliminación completa de sus datos en la base de datos, por lo que será archivado, preservando el expediente clínico del paciente conservando: organizacón visual en el manejo de pacientes activos  del terapeuta y un expediente archivado y listo en caso de regreso del paciente.
 
 **Restricciones:**
 
