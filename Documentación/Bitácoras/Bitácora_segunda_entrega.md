@@ -44,9 +44,13 @@ Además, se redefinieron los requisitos funcionales tomando en cuenta los nuevos
 ## Participación del equipo
 
 ### Mauricio de Lázaro
-**Actividad:** Definición de casos de uso para actores clínicos  
+**Actividades:** Definición de casos de uso para actores clínicos y arquitectura a usar
 
-Se encargará de definir los casos de uso correspondientes a los actores Terapeuta y Terapeuta Supervisor, describiendo las interacciones que estos actores tendrán con el sistema y las funcionalidades que podrán ejecutar dentro del mismo.
+- Se encargará de definir los casos de uso correspondientes a los actores Terapeuta y Terapeuta Supervisor, describiendo las interacciones que estos actores tendrán con el sistema y las funcionalidades que podrán ejecutar dentro del mismo.
+
+- Se encargará de definir la arquitectura del módulo de expedientes clínicos dentro del sistema, estableciendo la organización interna del código y la separación de responsabilidades.
+
+
 
 **¿Se completó?:** En progreso
 
@@ -59,12 +63,14 @@ Se encargará de definir los casos de uso relacionados con el actor Administrati
 **¿Se completó?:** En progreso
 
 ### Christopher May
-**Actividad:** Justificación del enfoque del RNF-02  
+**Actividades:** Justificación del enfoque del RNF-02 y diseño de logs y auditoría
 
-Se encargará de desarrollar una justificación del enfoque seleccionado para el requisito no funcional RNF-02 (Control de acceso basado en atributos).  
+- Se encargará de desarrollar una justificación del enfoque seleccionado para el requisito no funcional RNF-02 (Control de acceso basado en atributos).  
 Esto incluirá la explicación de las razones para adoptar este enfoque y la forma en que será representado e implementado dentro del sistema.
 
-**¿Se completó?:** En progreso
+- Se encargará de diseñar e implementar el mecanismo de logs y auditoría en backend para registrar eventos sensibles relacionados con el acceso y gestión de expedientes clínicos, definiendo los eventos auditables, los datos asociados a cada registro y las restricciones de persistencia e integridad, garantizando trazabilidad sobre accesos y modificaciones de expedientes clínicos, así como el registro de intentos de acceso permitidos y denegados.
+
+**¿Se completó?:** Completado
 
 ### Mijail Manrique
 **Actividad:** Definición de clases del sistema  
