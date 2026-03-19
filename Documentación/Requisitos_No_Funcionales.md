@@ -5,10 +5,12 @@
 El sistema deberá diseñarse para que la "eliminación" de pacientes no implique la eliminación completa de sus datos en la base de datos, por lo que será archivado, preservando el expediente clínico del paciente conservando: organizacón visual en el manejo de pacientes activos  del terapeuta y un expediente archivado y listo en caso de regreso del paciente.
 
 **Restricciones:**
+
+- El administrador será el que decide el estado del paciente
 - No se permitirá la eliminación permanente de expedientes clínicos desde la interfaz del sistema, este mismo solo será agregado a archivación.
 - El diseño deberá tener un atributo de estado (activo/archivado) con el fin de mantener separados los pacientes activos de los que ya fueron archivados.
 - Los pacientes archivados no deberán aparecer en listados activos, por lo que maneja una lista de pacientes activos y otra la cual será de los pacientes archivados.
-- La información archivada no podrá ser modificada, por lo que para poder sermodificada debera volver la lista de pacientes activos.
+- La información archivada no podrá ser modificada, por lo que para poder ser modificada debera volver la lista de pacientes activos.
 
 **Criterios de aceptación:**
 - El sistema muestra un atributo de estado para el expediente de cada paciente.
