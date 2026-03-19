@@ -60,7 +60,7 @@ Además, se redefinieron los requisitos funcionales tomando en cuenta los nuevos
 
 Se encargará de definir los casos de uso relacionados con el actor Administrativo, estableciendo las acciones y operaciones que este actor podrá realizar dentro del sistema para la gestión y consulta de la información.
 
-**¿Se completó?:** En progreso
+**¿Se completó?:** Completado
 
 ### Christopher May
 **Actividades:** Justificación del enfoque del RNF-02 y diseño de logs y auditoría
