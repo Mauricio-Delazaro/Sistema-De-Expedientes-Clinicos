@@ -155,7 +155,7 @@ La información registrada debe quedar asociada al expediente clínico del pacie
 **Criterios de aceptación:**
 - El sistema almacena la información del acuerdo de consentimiento en el expediente clínico del paciente.
 
-### RF - 12  Registro de expediente clínico:
+### RF - 11 Registro de expediente clínico:
 
 **Descripción:** 
 El sistema deberá permitir el registro y almacenaje de expedientes por paciente siguiendo las normativas y leyes pertinentes.

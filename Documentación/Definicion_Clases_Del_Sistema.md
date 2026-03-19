@@ -60,8 +60,12 @@ Contiene a **ReporteSesion**, **InformeConsentimiento** y a **EntrevistaSocioEco
 + acuerdoConfidencial: String
 
 ### EntrevistaSocioeconomica (hereda de Documento)
-+ ingresoFamiliar: Decimal
-+ alimentacion: Decimal
++ ingresoFamiliar: double
++ gastAlimentacion: double
 + lugarProcedencia: String
 + vivienda: String
 + estadoSaludFamiliar: String
+
+## Diagrama de relación de clases
+
+![Diagrama](/Documentación/Diagramas/DCDS.png)

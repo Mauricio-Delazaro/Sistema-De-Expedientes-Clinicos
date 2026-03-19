@@ -10,14 +10,16 @@ Durante esta primera entrega se trabajó en la definición inicial de los requis
 ### Christopher May
 **Responsabilidad asignada:** Requisitos funcionales.
 
-Se encargó de la identificación, redacción y organización de los requisitos funcionales del sistema, definiendo las funcionalidades principales que el sistema deberá proporcionar a los distintos actores.
+1. Se encargó de la identificación, redacción y organización de los requisitos funcionales del sistema, definiendo las funcionalidades principales que el sistema deberá proporcionar a los distintos actores.
 
-**Estado de la tarea:** Cumplido  
+**Estado de la tarea:** 
+1. Sí (PR #6)
 
 
 ### Mauricio de Lázaro
 **Responsabilidad asignada:** Requisitos no funcionales.
 
-Se encargó de la identificación y redacción de los requisitos no funcionales del sistema, estableciendo las características de calidad y restricciones que deberá cumplir el sistema.
+1. Se encargó de la identificación y redacción de los requisitos no funcionales del sistema, estableciendo las características de calidad y restricciones que deberá cumplir el sistema.
 
-**Estado de la tarea:** Cumplido  
+**Estado de la tarea:** 
+1. Sí (PR #10)
