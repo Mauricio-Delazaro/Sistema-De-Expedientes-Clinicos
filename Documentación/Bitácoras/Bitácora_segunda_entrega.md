@@ -97,4 +97,43 @@ Este trabajo permitirá establecer una base visual y grafica para los requisitos
 **Estado de la tarea:** 
 1. Sí (Issue #33, PR #38)
  
+# Semana 3
 
+**Periodo:** 19 de marzo – 25 de marzo
+
+## Participación del equipo
+
+### Angél Zúñiga
+**Actividad:** Definición de RNF enfocados en integridad  
+
+1. Se encargará de definir los requisitos no funcionales orientados al atributo de calidad de integridad, asegurando que los datos del sistema mantengan consistencia y validez.  
+Este trabajo contempla la validación de datos, las restricciones por estado y la consistencia entre entidades, alineado con las reglas de negocio del sistema.
+
+**¿Se completó?:** 
+1. Sí (Issue #43, PR #49)
+
+### Mijail Manrique
+**Actividad:** Elaboración del diccionario de datos  
+
+1. Se encargará de elaborar el diccionario de datos del sistema, documentando los atributos de las entidades junto con su tipo de dato, descripción y restricciones correspondientes.  
+Con esto se busca mantener consistencia en la nomenclatura, evitar duplicidades y conservar la alineación con el modelo de clases definido.
+
+**¿Se completó?:** 
+1. Sí (Issue #44, PR #50)
+
+### Christopher May
+**Actividad:** Definición de reglas de negocio y modelo de estados  
+
+1. Se encargará de definir los estados de las entidades principales, sus transiciones y las reglas de negocio asociadas a cada estado, documentando acciones permitidas y restringidas dentro del sistema.  
+Este trabajo permite formalizar el comportamiento del sistema por entidad y estado para mantener coherencia funcional.
+
+**¿Se completó?:** 
+1. Sí (Issue #45, PR #46)
+
+### Mauricio De lázaro
+**Actividad:** Requisitos no funcionales basados en auditoría del sistema  
+
+1. Se encargará de definir los requisitos no funcionales relacionados con auditoría, considerando la estructura de los mecanismos de registro y las acciones auditables dentro del sistema, incluyendo acceso a expedientes, registro, envío y modificación de reportes de sesión, así como su aprobación o rechazo.
+
+**¿Se completó?:** 
+1. Sí (Issue #42, PR #47)
