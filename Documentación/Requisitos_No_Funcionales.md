@@ -139,3 +139,50 @@ El sistema deberá registrar todas las operaciones realizadas sobre los reportes
 
 - Se registran los eventos de registro, modificación, envío para revisión y aprobación o rechazo de reportes.
 - Cada registro incluye usuario, rol, fecha y hora, acción, id del reporte y resultado.
+  
+---
+
+## RNF-08: Validación y Consistencia de Datos Clínicos 
+
+**Descripción:**
+El sistema deberá garantizar la integridad y consistencia de los datos almacenados en los expedientes clínicos mediante validaciones en el momento del ingreso y modificación de información. Estas validaciones aseguran que los datos cumplan con los estándares de formato, tipo, rango y completitud definidos por la normativa aplicable y las reglas de negocio del sistema.
+
+**Restricciones:**
+- Toda información ingresada en el expediente clínico debe validarse antes de ser almacenada en la base de datos.
+- Los campos obligatorios (nombre completo, edad, fecha de nacimiento, correo electrónico y número telefónico) deben contener valores válidos y no nulos. La fecha de nacimiento debe ser anterior a la fecha actual y consistente con la edad registrada. El número telefónico debe cumplir con el formato permitido, aceptando únicamente dígitos y caracteres de separación válidos (guiones y espacios).
+- Los datos de la entrevista socioeconómica (ingreso familiar, alimentación, vivienda) deben ser valores numéricos positivos.
+- La información archivada no podrá ser modificada; solo se permite su visualización.
+- Las modificaciones de datos que hayan sido aprobados por un terapeuta supervisor requerirán re-aprobación del administrador.
+
+
+**Criterios de aceptación:**
+- El sistema valida y rechaza datos incompletos o con formato inválido, mostrando un mensaje de error específico.
+- La edad calculada a partir de la fecha de nacimiento coincide con el valor registrado.
+- El sistema impide que expedientes archivados sean modificados, permitiendo solo lectura.
+- Al intentar modificar datos que fueron aprobados, el sistema requiere re-aprobación y notifica al supervisor.
+---
+
+## RNF-09: Restricciones de Estado y Control de Cambios en Reportes
+**Descripción:**
+El sistema deberá implementar un control estricto sobre los estados de los reportes de sesión clínica, garantizando que las transiciones entre estados sean válidas y coherentes con las reglas de negocio. Un reporte no podrá ser modificado si ha sido aprobado, asegurando la integridad, la trazabilidad e inmutabilidad de la información clínica.
+
+**Restricciones:**
+- Los reportes de sesión deben manejar estados definidos: "borrador", "pendiente de revisión", "aprobado" y "rechazado".
+- Un reporte en estado "borrador" puede ser editado únicamente por el usuario responsable.
+- Un reporte en estado "pendiente de revisión" no puede ser modificado por el terapeuta; solo el supervisor puede cambiar su estado.
+- Un reporte en estado "aprobado" es inmutable; no se permite ninguna modificación, únicamente su visualización.
+- Un reporte rechazado retorna al estado "borrador" con comentarios del supervisor visibles; el terapeuta puede entonces editarlo y reenviarlo.
+- El sistema debe mantener un historial completo de transiciones de estado para auditoría.
+
+**Criterios de aceptación:**
+- Un reporte en "borrador" permite edición solo al terapeuta propietario.
+- Un reporte en "aprobado" no permite modificaciones; el sistema retorna error al intentar cambiar cualquier campo.
+- Al rechazar un reporte, el sistema captura comentarios obligatorios y los hace visibles al terapeuta.
+- Un reporte rechazado regresa a "borrador" con los comentarios de rechazo visibles.
+- Se registra automáticamente el historial de transiciones de estado con usuarios responsables.
+- El sistema genera reportes de auditoría que muestran todas las transiciones de estado de un reporte.
+
+---
+
+
+
