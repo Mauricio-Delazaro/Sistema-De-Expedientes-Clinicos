@@ -59,7 +59,7 @@ Hereda de: Paciente
 Hereda de: Documento
 | Nombre        | Tipo de dato  | Descripción   | Restricciones |
 | ------------- |:-------------:| ------------- |:-------------:|
-| duracionSesion      | String     | Tiempo total que duró la sesión | Tiempo mayor a cero |
+| duracionSesion      | Int | Tiempo total que duró la sesión en minutos | Tiempo mayor a cero |
 | observacionesClinicas      | String | Notas clínicas correspondientes al paciente por parte del profesional encargado | Debe existir |
 | estado      | String | Estado psico-emocional actual del paciente | Debe existir |
 | comentarios      | String | Notas del profesional encargado que notó durante la sesión sobre el paciente  y considero relevante | Debe existir |
