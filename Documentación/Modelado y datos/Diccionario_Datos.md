@@ -17,7 +17,28 @@ Hereda de: Usuario
 
 ### Terapeuta
 Hereda de: Usuario
-Atiende paciente
+* Sin atributos propios adicionales
+* Hereda de: Usuario
+* Atributos heredados: 
+    + id
+    + nombreCompleto
+
+**Nota:**  La asignación de pacientes se gestiona mediante la entidad **AsignacionTerapeutaPaciente**.
+
+### AsignacionTerapeutaPaciente
+Entidad pivote para la relación N:M entre Terapeuta y Paciente
+
+| Nombre        | Tipo de dato  | Descripción   | Restricciones |
+| ------------- |:-------------:| ------------- |:-------------:|
+| idAsignacion | Long | Identificador único de la asignación | Único. 19 dígitos máximos y Debe existir |
+| idTerapeuta | Long | Identificador del terapeuta | Referencia a Terapeuta. 19 dígitos máximos y Debe existir |
+| idPaciente | Long | Identificador del paciente | Referencia a Paciente. 19 dígitos máximos y Debe existir |
+| fechaAsignacion | DateTime | Fecha y hora de la asignación | Debe existir. Fecha no mayor a la fecha actual |
+| estado | String | Estado de la asignación | Debe existir. Valores: activa, inactiva |
+| observaciones | String | Notas sobre la asignación | Máximo 500 carácteres. Opcional |
+| fechaFinalizacion | DateTime | Fecha de finalización de la asignación | Opcional. Debe ser >= fechaAsignacion |
+
+
 
 ### Supervisor
 * Sin atributos propios

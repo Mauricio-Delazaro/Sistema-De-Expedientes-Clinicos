@@ -10,7 +10,6 @@ Este proyecto se enfoca en el desarrollo de un módulo para la gestión de exped
     - [Requisitos funcionales](/Documentación/Requisitos/Requisitos_Funcionales.md)
     - [Requisitos no funcionales](/Documentación/Requisitos/Requisitos_No_Funcionales.md)
     - [Casos de uso](/Documentación/Requisitos/Casos_de_uso.md)
-    - [Auditoría y logs](/Documentación/Requisitos/Logs_y_auditorias.md)
 
 - **Modelado y datos**
     - [Estructura del Expediente Clínico](/Documentación/Modelado%20y%20datos/Estructura_Del_Expediente_Clínico.md)
@@ -20,6 +19,7 @@ Este proyecto se enfoca en el desarrollo de un módulo para la gestión de exped
 
 - **Diseño y arquitectura**
     - [Arquitectura y patrón de diseño](/Documentación/Diseño%20y%20arquitectura/Arquitectura_y_patrón.md)
+    - [Auditoría](/Documentación/Diseño%20y%20arquitectura/Auditoria.md)
     - [Justificación de enfoque RNF-02](/Documentación/Diseño%20y%20arquitectura/Justificacion_del_enfoque_RNF-02.md)
     - [Diagramas (BPMN, DCDS, etc.)](/Documentación/Diagramas/)
 

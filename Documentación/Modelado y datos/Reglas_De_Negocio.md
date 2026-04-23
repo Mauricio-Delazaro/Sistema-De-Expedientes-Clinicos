@@ -22,9 +22,9 @@
 
 | ID | Regla |
 |---|---|
-| RN-01 | Solo el terapeuta asignado puede consultar el expediente. |
-| RN-02 | Solo el terapeuta asignado puede modificar el expediente. |
-| RN-03 | Solo el terapeuta asignado puede registrar sesiones. |
+| RN-01 | Solo terapeutas con registro activo en **AsignacionTerapeutaPaciente** (estado = "activa")  puede consultar el expediente. |
+| RN-02 | Solo terapeutas con registro activo en **AsignacionTerapeutaPaciente** (estado = "activa")  puede modificar el expediente. |
+| RN-03 | Solo terapeutas con registro activo en **AsignacionTerapeutaPaciente** (estado = "activa")  puede registrar sesiones. |
 | RN-04 | Solo usuarios autorizados pueden aprobar o rechazar reportes. |
 | RN-05 | No se puede modificar un expediente archivado. |
 | RN-06 | No se puede modificar un reporte aprobado. |

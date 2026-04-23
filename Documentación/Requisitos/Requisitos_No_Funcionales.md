@@ -60,7 +60,9 @@ El sistema deberá garantizar el aislamiento de los expedientes clínicos median
 
 ---
 
-### RNF - 04 Registro de eventos de auditoría en expedientes clínicos
+### RNF-04 Registro de eventos de auditoría en expedientes clínicos
+
+> **Referencia:** [`Auditoria.md`](../Diseño%20y%20arquitectura/Auditoria.md).
 
 **Descripción:**
 El sistema deberá registrar, mediante un mecanismo en backend, todos los eventos sensibles relacionados con el acceso y gestión de expedientes clínicos y sus reportes asociados, con el fin de garantizar la trazabilidad de las acciones realizadas por los usuarios y detectar accesos no permitidos.
@@ -68,9 +70,7 @@ El sistema deberá registrar, mediante un mecanismo en backend, todos los evento
 **Restricciones:**
 
 - La auditoría deberá ejecutarse exclusivamente en backend.
-- Los eventos auditables incluyen: consulta de expediente clínico, acceso denegado a expediente clínico, registro de entrevista socioeconómica, registro de informe de consentimiento, registro de reporte de sesión, modificación de reporte de sesión, envío de reporte de sesión para revisión, aprobación o rechazo de reporte de sesión.
-- La fecha y hora del evento deberá registrarse en formato ISO 8601.
-- El campo “resultado” deberá utilizar valores controlados: {EXITO, DENEGADO}.
+- Los eventos auditables son los definidos en [`Auditoria.md`, sección 2](../Diseño%20y%20arquitectura/Auditoria.md#2-lista-de-eventos-auditables).
 
 **Criterios de aceptación:**
 
@@ -79,68 +79,69 @@ El sistema deberá registrar, mediante un mecanismo en backend, todos los evento
 - No existen acciones auditables que se ejecuten sin generar un registro.
 - El registro se realiza sin intervención del usuario.
 
---- 
+---
 
 ### RNF-05 Estructura de los registros de auditoría
 
-**Descripción:**  
+> **Referencia:** [`Auditoria.md`, sección 3](../Diseño%20y%20arquitectura/Auditoria.md#3-estructura-del-registro-de-auditoría).
+
+**Descripción:**
 El sistema deberá registrar los eventos de auditoría utilizando una estructura de datos estandarizada que permita identificar claramente las acciones realizadas, garantizando la integridad e inmutabilidad de los registros.
 
 **Restricciones:**
 
-- Cada registro debe incluir: id del usuario, rol del usuario, fecha y hora, acción realizada, recurso afectado, id del recurso y resultado de la operación.
-- Los registros deberán almacenarse en formato estructurado.
+- Los registros deberán almacenarse en formato estructurado y persistente.
 - No se permitirá la modificación o eliminación de logs desde la interfaz del sistema.
-- Los registros deben ser persistentes.
 - Solo se permitirán operaciones de inserción sobre los logs.
 
 **Criterios de aceptación:**
 
-- Todos los registros contienen los campos definidos.
-- No se almacenan registros incompletos.
+- Todos los registros contienen los campos definidos en `Auditoria.md`; no se almacenan registros incompletos.
 - No existe funcionalidad para editar o eliminar logs desde el sistema.
-- Los registros permanecen íntegros tras reinicios o actualizaciones.
+- Los registros permanecen íntegros tras reinicios o actualizaciones del sistema.
 
---- 
+---
 
 ### RNF-06 Auditoría de accesos a expedientes
 
-**Descripción:**  
+> **Referencia:** [`Auditoria.md`, sección 2.1](../Diseño%20y%20arquitectura/Auditoria.md#21-acceso-a-expediente-clínico).
+
+**Descripción:**
 El sistema deberá registrar todos los intentos de acceso a expedientes clínicos, tanto exitosos como denegados, con el objetivo de mantener control sobre el acceso a información sensible.
 
 **Restricciones:**
 
-- Todo acceso debe generar un registro.
-- Se debe registrar explícitamente el resultado de la operación.
-- No se deben omitir intentos fallidos.
+- Todo acceso a expediente clínico debe generar un registro de auditoría.
+- No se deben omitir intentos fallidos de acceso.
 - No se deben almacenar datos clínicos sensibles completos dentro de los logs.
 
 **Criterios de aceptación:**
 
-- Se registra cada consulta de expediente clínico.
-- Se registra cada intento de acceso denegado.
-- Cada registro incluye usuario, rol, fecha y hora, acción, id del expediente y resultado.
+- Todo acceso a expediente clínico genera un registro de auditoría.
+- Se registran tanto accesos permitidos como denegados.
 - Los registros son accesibles para auditoría por usuarios autorizados.
 
---- 
+---
 
 ### RNF-07 Trazabilidad de operaciones sobre reportes clínicos
 
-**Descripción:**  
+> **Referencia:** [`Auditoria.md`, sección 2.3](../Diseño%20y%20arquitectura/Auditoria.md#23-operaciones-sobre-reportes-de-sesión).
+
+**Descripción:**
 El sistema deberá registrar todas las operaciones realizadas sobre los reportes clínicos contenidos en los expedientes, permitiendo rastrear su ciclo de vida desde su creación hasta su aprobación o rechazo.
 
 **Restricciones:**
 
-- Todas las operaciones sobre reportes deben generar un registro.
-- Los registros deben asociarse a un identificador único de reporte.
-- El historial debe mantenerse íntegro y persistente.
+- Todas las operaciones sobre reportes deben generar un registro de auditoría.
+- El historial debe mantenerse íntegro y persistente; no puede ser alterado desde la interfaz.
 
 **Criterios de aceptación:**
 
-- Se registran los eventos de registro, modificación, envío para revisión y aprobación o rechazo de reportes.
-- Cada registro incluye usuario, rol, fecha y hora, acción, id del reporte y resultado.
+- Se registran todos los eventos definidos en `Auditoria.md`, sección 2.3.
+- El historial es completo e inmutable.
 
 ---
+
 ## RNF-08: Validación y Consistencia de Datos Clínicos 
 
 **Descripción:**
