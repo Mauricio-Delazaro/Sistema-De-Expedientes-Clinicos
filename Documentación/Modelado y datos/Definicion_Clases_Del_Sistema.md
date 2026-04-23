@@ -11,12 +11,31 @@ Posee **Expediente**
 + numeroTelefonico: String
 
 ### Terapeuta (hereda de Usuario)
-Atiende a **Paciente** y elabora **ReporteSesion**
-+ idPacienteAsignado: Long
+Atiende a múltiples **Paciente** (a través de **AsignacionTerapeutaPaciente**) y elabora **ReporteSesion**
 ---
 + visualizarLista()
 + seleccionarExpediente()
 + editarExpediente()
+
+**Cardinalidad:** 1:N (Un terapeuta tiene múltiples pacientes asignados)
+### *AsignacionTerapeutaPaciente*
+Entidad que modela la relación N:M entre Terapeuta y Paciente
++ idAsignacion: Long
++ idTerapeuta: Long
++ idPaciente: Long
++ fechaAsignacion: DateTime
++ estado: String
++ observaciones: String
++ fechaFinalizacion: DateTime
+---
++ crearAsignacion()
++ modificarAsignacion()
++ finalizarAsignacion()
++ obtenerPacientesAsignados()
+
+**Relación:** Terapeuta (1) ──→ AsignacionTerapeutaPaciente (N) ←─── Paciente (1)
+
+**Propósito:** Permite que un terapeuta tenga múltiples pacientes asignados. El atributo `estado` es clave para RNF-02 (ABAC) - control de acceso basado en asignación activa.
 
 ### Supervisor (hereda de Usuario)
 Supervisa a **Terapeuta** y revisa a **ReporteSesion**

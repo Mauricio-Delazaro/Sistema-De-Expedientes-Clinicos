@@ -12,11 +12,15 @@ Cada elemento de la lista mostrará:
 **Precondiciones:**
 - El paciente está registrado en el sistema
 - El terapeuta está registrado en el sistema
+- Existen uno o más registros en **AsignacionTerapeutaPaciente** con estado = "activa" para el terapeuta
+
 
 **Criterios de aceptación:**
 - Dado un terapeuta autorizado con al menos un paciente asignado, cuando solicita la lista, el sistema devuelve solo pacientes asociados a ese terapeuta.
 - La respuesta incluye para cada paciente el nombre completo y el número de expediente clínico.
 - Si el terapeuta no tiene pacientes asignados, el sistema muestra una lista vacía y no incluye pacientes de otros terapeutas.
+- El sistema muestra la lista de pacientes con registros activos en **AsignacionTerapeutaPaciente** asociados al terapeuta.
+- Solo se muestran pacientes con estado = "activa" en la asignación
 
 ### RF-02 Acceso al expediente clínico de paciente asignado
 
