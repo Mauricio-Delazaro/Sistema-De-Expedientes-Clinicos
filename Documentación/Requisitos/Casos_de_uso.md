@@ -7,10 +7,9 @@
 El terapeuta consulta la lista de pacientes que tiene asignados.
 
 ### Flujo principal:
-1. El terapeuta accede al moódulo de pacientes
-2. El sistema hará las validaciones de acuerdo
-a los mecanismos implementandos con enfoque ABAC.
-3. El sistiema filtra pacientes por asignación.
+1. El terapeuta accede al módulo de pacientes.
+2. El sistema valida las reglas de autorización definidas por el mecanismo ABAC.
+3. El sistema filtra los pacientes por asignación.
 4. El sistema muestra:
     - Nombre del paciente
     - Número de expediente
@@ -28,15 +27,15 @@ El terapeuta consulta el expediente de un paciente asignado.
 
 
 ### Flujo principal:
-1. El terapeuta selecciona un paciente
+1. El terapeuta selecciona un paciente asignado.
 2. El sistema valida:
-    - Rol = Terapeuta
-    - Relación terapeuta-expediente
-3. El sistema autoriza acceso
+    - Rol autorizado = Terapeuta
+    - Relación terapeuta-expediente válida
+3. El sistema autoriza el acceso.
 4. El sistema muestra el expediente y sus apartados.
 
 ### Flujo alterno 
-- Paciente no asignado -> acceso denegado
+- Paciente no asignado -> acceso denegado.
 
 ### Postcondiciones:
 - Acceso permitido solo si está autorizado
@@ -54,7 +53,7 @@ El terapeuta registra un reporte en un expediente autorizado.
 
 ### Flujo principal:
 1. El terapeuta accede al expediente
-2. El sistema valida autorización sobre el paciente
+2. El sistema valida la autorización sobre el paciente
 3. El terapeuta accede al control de sesiones
 4. El terapeuta ingresa datos en el reporte de sesión:
     - Fecha
@@ -63,7 +62,7 @@ El terapeuta registra un reporte en un expediente autorizado.
 5. El sistema almacena el reporte
 
 ### Flujo alterno:
-- Intento de registrar reporte vacío -> registro denegado. 
+- Intento de registrar un reporte vacío -> registro denegado.
 
 ### Postcondiciones:
 - Reporte se registra correctamente
@@ -79,18 +78,18 @@ El terapeuta envía un reporte al supervisor.
 
 
 ### Flujo principal:
-1. El terapeuta selecciona un reporte
+1. El terapeuta selecciona un reporte propio.
 2. El sistema valida:
-    - Propiedad del reporte
-3. El terapeuta envía el reporte a revisión 
+    - Propiedad del reporte válida
+3. El terapeuta envía el reporte a revisión.
 4. El sistema envía el reporte al supervisor
-5. El sistema cambia el estado del reporte a "pendiente de revisión" 
+5. El sistema cambia el estado del reporte a "pendiente de revisión".
 
 ### Flujo alterno:
-- Reporte no pertenece al terapeuta -> envio denegado 
+- Reporte no pertenece al terapeuta -> envío denegado.
 
 ### Postcondiciones: 
-- Reporte se envía al supervisor y queda en estado "pendiente de revisión
+- El reporte se envía al supervisor y queda en estado "pendiente de revisión".
 
 ### RF relacionados:
 - RF-04 
@@ -105,16 +104,16 @@ El terapeuta edita un reporte rechazado.
 1. El terapeuta accede a sus reportes
 2. El sistema filtra reportes por:
     - Estado = rechazado
-    - Propiertario = terapeuta
-3. El terapeuta selecciona el reporte 
+    - Propietario = terapeuta
+3. El terapeuta selecciona el reporte
 4. El terapeuta modifica el reporte
 5. El terapeuta guarda los cambios del reporte
 6. El terapeuta reenvía el reporte a revisión
 7. El sistema envía el reporte al supervisor
-8. El sistema cambia el estado del reporte a "pendiente de revisión" 
+8. El sistema cambia el estado del reporte a "pendiente de revisión".
 
 ### Postcondiciones:
-- Reporte se envía al supervisor y queda en estado "pendiente de revisión
+- El reporte se envía al supervisor y queda en estado "pendiente de revisión".
 
 ### RF relacionados:
 - RF-05
@@ -130,7 +129,7 @@ El supervisor consulta la lista de reportes en estado pendiente enviados por ter
 
 ### Flujo principal:
 1. El supervisor accede al módulo de revisión
-2. El sistema valida rol = Supervisor
+2. El sistema valida que el usuario tenga el rol de Supervisor.
 3. El sistema filtra reportes por:
     - Estado = pendiente de revisión
     - Terapeutas bajo supervisión
@@ -152,12 +151,11 @@ El supervisor consulta la lista de reportes en estado pendiente enviados por ter
 El supervisor consulta el detalle de un reporte de sesión.
 
 ### Flujo principal: 
-1. El supervisor selecciona un reporte
+1. El supervisor selecciona un reporte autorizado.
 
 2. El sistema valida:
-    - Rol = Supervisor
-    - Relación supervisor–terapeuta
-    - Estado del reporte válido
+    - Rol autorizado = Supervisor
+    - Relación supervisor-terapeuta válida
 3. El sistema muestra:
     - Terapeuta
     - Paciente
@@ -180,10 +178,10 @@ El supervisor aprueba un reporte revisado.
 ### Flujo principal:
 1. El supervisor accede a un reporte pendiente
 2. El sistema valida:
-    - Estado = pendiente
-    - Autorización sobre el reporte
+    - Estado = pendiente de revisión
+    - Autorización sobre el reporte válida
 3. El supervisor selecciona “Aprobar”
-4. El sistema actualiza estado a “aprobado”
+4. El sistema actualiza el estado a “aprobado”
 5. El sistema registra la acción
 
 ### Postcondiciones:
@@ -238,18 +236,18 @@ Permite al administrador crear el expediente clínico asociado a un paciente reg
 ### CU-11: Registrar entrevista socioeconómica
 
 ### Descripción:
-Permite al administrador registrar la información correspondiente a la entrevista socioeconómica de un paciente
+Permite al administrador registrar la información correspondiente a la entrevista socioeconómica de un paciente.
 
 ### Flujo principal:
 1. El administrador accede al expediente clínico del paciente
-2. El administrador selecciona la opcíon registrar entrevista socioeconómica
-3. El sistema muestra el formlario correspondiente
+2. El administrador selecciona la opción registrar entrevista socioeconómica.
+3. El sistema muestra el formulario correspondiente.
 4. El administrador captura la información de la entrevista
-5. El administrador guarda la informacion
-6. El sistema almacena los datos en el eexpediente clínico del paciente
+5. El administrador guarda la información.
+6. El sistema almacena los datos en el expediente clínico del paciente.
 
 ### Postcondiciones:
-- La informacion de la entrevista socioeconómica queda almacenada en el expediente del paciente
+- La información de la entrevista socioeconómica queda almacenada en el expediente del paciente.
 
 ### RF relacionados:
 - RF-10
@@ -257,18 +255,18 @@ Permite al administrador registrar la información correspondiente a la entrevis
 ### CU-12: Registrar consentimiento informado
 
 ### Descripción:
-Permite al administrador regisrar la información correspondiente al acuerdo de consentimiento firmado por el paciente
+Permite al administrador registrar la información correspondiente al acuerdo de consentimiento firmado por el paciente.
 
 ### Flujo principal:
-1. El administardor accede al expediente clínico del paciente
+1. El administrador accede al expediente clínico del paciente.
 2. El administrador selecciona la opción registrar consentimiento informado
-3. El sistema muestra el formulario de registro
-4. El administradorcaptura la información del documento firmado
-5. EL administador guarda la información
-6. El sistema almacena el documento dentro del expediente clínico del paciente
+3. El sistema muestra el formulario de registro.
+4. El administrador captura la información del documento firmado.
+5. El administrador guarda la información.
+6. El sistema almacena el documento dentro del expediente clínico del paciente.
 
 ### Postcondiciones:
-El consentimiento informado queda registrado en el expediente clínico del paciente
+- El consentimiento informado queda registrado en el expediente clínico del paciente.
 
 ### RF relacionados:
 - RF-11
