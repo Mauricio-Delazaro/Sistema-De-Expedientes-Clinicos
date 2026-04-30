@@ -1,22 +1,42 @@
 ## Definición de clases del sistema
 
 ### *Usuario*
-+ id: Long
++ idUsuario: Long
 + nombreCompleto: String
 
 ### Paciente (hereda de Usuario)
 Posee **Expediente**
-+ edad: int
++ edad: Int
 + fechaNacimiento: Date
++ correoElectronico: String
 + numeroTelefonico: String
 
 ### Terapeuta (hereda de Usuario)
-Atiende a **Paciente** y elabora **ReporteSesion**
-+ idPacienteAsignado: Long
+Atiende a múltiples **Paciente** (a través de **AsignacionTerapeutaPaciente**) y elabora **ReporteSesion**
 ---
 + visualizarLista()
 + seleccionarExpediente()
 + editarExpediente()
+
+**Cardinalidad:** 1:N (Un terapeuta tiene múltiples pacientes asignados)
+### *AsignacionTerapeutaPaciente*
+Entidad que modela la relación N:M entre Terapeuta y Paciente
++ idAsignacion: Long
++ idTerapeuta: Long
++ idPaciente: Long
++ fechaAsignacion: DateTime
++ estado: String
++ observaciones: String
++ fechaFinalizacion: DateTime
+---
++ crearAsignacion()
++ modificarAsignacion()
++ finalizarAsignacion()
++ obtenerPacientesAsignados()
+
+**Relación:** Terapeuta (1) ──→ AsignacionTerapeutaPaciente (N) ←─── Paciente (1)
+
+**Propósito:** Permite que un terapeuta tenga múltiples pacientes asignados. El atributo `estado` es clave para RNF-02 (ABAC) - control de acceso basado en asignación activa.
 
 ### Supervisor (hereda de Usuario)
 Supervisa a **Terapeuta** y revisa a **ReporteSesion**
@@ -33,23 +53,20 @@ Registra a **InformeConsentimiento** y a **EntrevistaSocioEconomica**
 + anexarExpediente()
 
 ### *Documento*
-+ id: Long
++ idDocumento: Long
 + fecha: Date
 ---
 + almacenar()
 
 ### Expediente (hereda de Documento)
-Contiene a **ReporteSesion**, **InformeConsentimiento** y a **EntrevistaSocioEconomica**
-+ nombreCompleto: String
-+ edad: Int
-+ fechaNacimiento: Date
-+ correoElectronico: String
-+ numeroTelefonico: String
+Asociado a: **Paciente**
+Contiene: **ReporteSesion**, **InformeConsentimiento**, **EntrevistaSocioEconomica**
 + terapeutaAsociado: String
 + fechaProxCita: DateTime
++ idPaciente: Long
 
 ### ReporteSesion (hereda de Documento)
-+ duracionSesion: String
++ duracionSesion: Int
 + observacionesClinicas: String
 + estado:String
 + comentarios: String
@@ -59,12 +76,12 @@ Contiene a **ReporteSesion**, **InformeConsentimiento** y a **EntrevistaSocioEco
 + cuerpoDelTexto: String
 + acuerdoConfidencial: String
 
-### EntrevistaSocioeconomica (hereda de Documento)
-+ ingresoFamiliar: double
-+ gastAlimentacion: double
+### EntrevistaSocioEconomica (hereda de Documento)
++ ingresoFamiliar: Decimal
++ alimentacion: Decimal
 + lugarProcedencia: String
 + vivienda: String
-+ estadoSaludFamiliar: String
++ estadoSaludFamiliar: Int
 
 ## Diagrama de relación de clases
 
