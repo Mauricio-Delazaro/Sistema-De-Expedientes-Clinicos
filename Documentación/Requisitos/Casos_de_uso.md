@@ -8,7 +8,7 @@ El terapeuta consulta la lista de pacientes que tiene asignados.
 
 ### Flujo principal:
 1. El terapeuta accede al módulo de pacientes.
-2. El sistema valida las reglas de autorización definidas por el mecanismo ABAC.
+2. El sistema valida que el usuario autenticado tenga rol Terapeuta y que exista asignación registrada entre el terapeuta y los pacientes.
 3. El sistema filtra los pacientes por asignación.
 4. El sistema muestra:
     - Nombre del paciente
@@ -23,8 +23,6 @@ El terapeuta consulta la lista de pacientes que tiene asignados.
 
 ### Descripción:
 El terapeuta consulta el expediente de un paciente asignado.
-
-
 
 ### Flujo principal:
 1. El terapeuta selecciona un paciente asignado.
@@ -48,8 +46,6 @@ El terapeuta consulta el expediente de un paciente asignado.
 
 ### Descripción: 
 El terapeuta registra un reporte en un expediente autorizado.
-
-
 
 ### Flujo principal:
 1. El terapeuta accede al expediente
@@ -75,7 +71,6 @@ El terapeuta registra un reporte en un expediente autorizado.
 
 ### Descripción:
 El terapeuta envía un reporte al supervisor.
-
 
 ### Flujo principal:
 1. El terapeuta selecciona un reporte propio.
@@ -152,7 +147,6 @@ El supervisor consulta el detalle de un reporte de sesión.
 
 ### Flujo principal: 
 1. El supervisor selecciona un reporte autorizado.
-
 2. El sistema valida:
     - Rol autorizado = Supervisor
     - Relación supervisor-terapeuta válida
@@ -180,8 +174,8 @@ El supervisor aprueba un reporte revisado.
 2. El sistema valida:
     - Estado = pendiente de revisión
     - Autorización sobre el reporte válida
-3. El supervisor selecciona “Aprobar”
-4. El sistema actualiza el estado a “aprobado”
+3. El supervisor selecciona "Aprobar"
+4. El sistema actualiza el estado a "aprobado"
 5. El sistema registra la acción
 
 ### Postcondiciones:
@@ -198,11 +192,11 @@ El supervisor rechaza un reporte y registra comentarios.
 ### Flujo principal:
 1. El supervisor accede a un reporte pendiente
 2. El sistema valida autorización
-3. El supervisor selecciona “Rechazar”
+3. El supervisor selecciona "Rechazar"
 4. Ingresa comentarios
 5. El sistema:
     - Guarda comentarios
-    - Cambia estado a “rechazado”
+    - Cambia estado a "rechazado"
     - Notifica al terapeuta
 
 ### Postcondiciones:
@@ -270,9 +264,35 @@ Permite al administrador registrar la información correspondiente al acuerdo de
 
 ### RF relacionados:
 - RF-11
+---
+### CU-13: Consultar registros de auditoría
 
+### Descripción:
+El Administrador consulta el historial de eventos registrados por el sistema de auditoría.
 
+### Flujo principal:
+1. El Administrador accede al módulo de auditoría.
+2. El sistema valida rol = Administrador.
+3. El Administrador aplica de forma opcional filtros de búsqueda:
+    - Identificador de usuario
+    - Rango de fechas
+    - Tipo de acción
+    - Recurso e identificador de recurso
+    - Resultado (`PERMITIDO` / `DENEGADO`)
+4. El sistema retorna la lista de registros que cumplen los criterios.
+5. El sistema muestra por cada registro:
+    - Identificador del log
+    - Usuario y rol
+    - Acción realizada
+    - Recurso e identificador del recurso
+    - Fecha y hora
+    - Resultado
 
+### Flujo alterno:
+- Usuario con rol Terapeuta o Supervisor intenta acceder al módulo → acceso denegado.
 
+### Postcondiciones:
+- Los registros mostrados son de solo lectura; no es posible modificarlos ni eliminarlos desde la interfaz.
 
-
+### RF relacionados:
+- RF-12

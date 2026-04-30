@@ -4,7 +4,7 @@ El sistema seguirá un estilo de **arquitectura en capas**, que organiza sus com
 
 Ya que el sistema está orientado a la gestión de expedientes clínicos y reportes de sesiones clínicas, esta separación resulta importante para asegurar la correcta aplicación de reglas de negocio y la trazabilidad de las operaciones mediante auditoría.
 
-Para su implementación, se adoptará el patrón **Controller-Service-Repository (CSR)**, que define una estructura organizada dentro de la arquitectura en capas. En este implementación, la capa de presentación interactúa con el sistema a través de controladores (Controller), que reciben y gestionan las solicitudes del frontend. Estas solicitudes serán procesadas por la capa de lógica de negocio implementada mediante servicios (Service), donde se aplican las reglas del sistema, incluyendo la gestión de reportes clínicos, documentos y acciones de supervisión. Por último, la capa de acceso a datos está representada por repositorios (Repository), los cuales se encargan de la interacción con la base de datos, permitiendo la persistencia y recuperación de la información. 
+Para su implementación, se adoptará el patrón **Controller-Service-Repository (CSR)**, que define una estructura organizada dentro de la arquitectura en capas. En esta implementación, la capa de presentación interactúa con el sistema a través de controladores (Controller), que reciben y gestionan las solicitudes del frontend. Estas solicitudes serán procesadas por la capa de lógica de negocio implementada mediante servicios (Service), donde se aplican las reglas del sistema, incluyendo la gestión de reportes clínicos, documentos y acciones de supervisión. Por último, la capa de acceso a datos está representada por repositorios (Repository), los cuales se encargan de la interacción con la base de datos, permitiendo la persistencia y recuperación de la información.
 
 # Justificación
 
@@ -20,9 +20,9 @@ La arquitectura del sistema estará implementada mediante una estructura en capa
 
 - **Capa de presentación (Frontend/Controller):** Esta capa se encargará de gestionar la interacción con el usuario, recibiendo solicitudes y devolviendo respuestas a través de la interfaz. No contiene lógica de negocio, sino que delega el procesamiento de las operaciones a la capa de servicios mediante controladores, que actúan como punto de entrada al sistema.
 
-- **Capa de lógica de negocio (Service):** Esta capa concentrará las reglas del sistema, incluyendo validaciones, control del estado de los reportes y documentos, así como la aplicación de restricciones basadas en roles (terapeuta, supervisor, administrativo). Además, gestionará acciones como la supervisión de reportes y el registro de eventos en el sistema de auditoría, garantizando la trazabilidad de las operaciones.
+- **Capa de lógica de negocio (Service):** Esta capa concentrará las reglas del sistema, incluyendo validaciones, control del estado de los reportes y documentos, así como la aplicación del control de acceso basado en atributos (ABAC). Es responsable de evaluar las reglas de autorización antes de ejecutar cualquier operación sensible y de generar los registros de auditoría con resultado `PERMITIDO` o `DENEGADO`, conforme a lo definido en `Auditoria.md`. El Controller únicamente recibe la solicitud y la delega al Service sin ejecutar lógica de negocio ni de autorización.
 
-- **Capa de acceso a datos (Repository):** Esta capa abstraerá la interacción con la base de datos, proporcionando métodos para consultar, almacenar y actualizar la información relacionada con expedientes, reportes, documentos clínicos y registros de auditoría. De esta forma, se evita exponer detalles al resto del sistema.
+- **Capa de acceso a datos (Repository):** Esta capa abstraerá la interacción con la base de datos, proporcionando métodos para consultar, almacenar y actualizar la información relacionada con expedientes, reportes, documentos clínicos y registros de auditoría. Incluye tanto los repositorios de datos de negocio como el repositorio de auditoría. De esta forma, se evita exponer detalles al resto del sistema.
 
 - **Capa de persistencia (Base de datos):** Corresponde al sistema de base de datos donde se almacena de forma estructurada toda la información del sistema. Esta capa garantizará la integridad y disponibilidad de los datos, incluyendo los registros necesarios para la trazabilidad de las operaciones.
 
@@ -64,9 +64,9 @@ La arquitectura del sistema estará implementada mediante una estructura en capa
 - Permitir el registro de reportes generados a partir de sesiones presenciales  
 - Gestionar la captura y actualización de documentos clínicos específicos  
 - Validar la consistencia lógica de la información  
-- Aplicar reglas basadas en roles (terapeuta, supervisor, administrativo)  
+- Evaluar las reglas de autorización ABAC (rol del usuario y atributos de asignación) antes de ejecutar operaciones sensibles  
 - Gestionar el proceso de revisión de reportes (aprobación, observación, rechazo)  
-- Registrar eventos relevantes (creación, modificación, revisión) en el módulo de auditoría  
+- Generar y persistir los registros de auditoría con resultado `PERMITIDO` o `DENEGADO` tras cada operación evaluada  
 - Exponer servicios mediante API REST para el consumo del frontend  
 - Coordinar la interacción con la capa de acceso a datos  
 
@@ -86,7 +86,6 @@ La arquitectura del sistema estará implementada mediante una estructura en capa
 - Gestionar consultas
 - Manejar transacciones para garantizar integridad  
 - Proveer acceso a la información de usuarios para validación de roles y trazabilidad  
-
 
 ---
 
@@ -109,27 +108,24 @@ La arquitectura del sistema estará implementada mediante una estructura en capa
 - Persistencia de documentos capturados en el sistema  
 - Persistencia de eventos de auditoría para trazabilidad  
 
-
 ## Comunicación entre componentes
 
 El flujo de comunicación del sistema se define de la siguiente manera:
 
 1. El frontend envía solicitudes HTTP/HTTPS al backend mediante API REST (por ejemplo, para registrar un reporte de sesión o registrar un documento).  
-2. El backend (lógica de negocio) procesa la solicitud, aplica las reglas del sistema y valida acciones según el rol del usuario.   
-4. En caso de creación o modificación de reportes o documentos, así como en procesos de supervisión, se registra automáticamente un evento en el módulo de auditoría.  
-5. El backend delega la operación a la capa de acceso a datos, la cual interactúa con la base de datos.  
-6. La información es recuperada o almacenada y enviada de regreso al frontend para su visualización.  
-
-
+2. El backend (lógica de negocio) procesa la solicitud, aplica las reglas de autorización ABAC y las reglas del sistema.  
+3. El Service genera el registro de auditoría correspondiente (con resultado `PERMITIDO` o `DENEGADO`) y lo persiste a través del Repository de auditoría.  
+4. El backend delega la operación a la capa de acceso a datos, la cual interactúa con la base de datos.  
+5. La información es recuperada o almacenada y enviada de regreso al frontend para su visualización.  
 
 ## Flujo de operación del sistema
 
 El flujo de operación del sistema está representado en el siguiente esquema:
 
-![](/Documentación/Diagramas/diagrama_de_arquitectura.png)
+```
+Controller → Service → Repository → Base de datos
+                 ↓
+             Auditoría
+```
 
-En este flujo, cada solicitud generada desde la interfaz de usuario es procesada por la capa de lógica de negocio, donde se aplican las reglas del sistema, incluyendo aplicación de restricciones basadas en roles (terapeuta, supervisor, administrativo). De igual manera, en esta capa se gestionan las acciones de supervisión (como aprobación u observación de reportes) y se registra cada operación relevante en el módulo de auditoría, garantizando la trazabilidad de las acciones realizadas.
-
-Posteriormente, la lógica de negocio delega las operaciones a la capa de acceso a datos, la cual se encarga de interactuar con la base de datos mediante repositorios, asegurando la correcta persistencia y recuperación de la información.
-
-Este flujo permite mantener una clara separación de responsabilidades entre capas, garantizando la consistencia de los datos y la trazabilidad de las operaciones.
+En este flujo, cada solicitud es delegada por el Controller al Service, donde se evalúan las reglas de autorización ABAC y las reglas de negocio antes de interactuar con la base de datos. El Service también genera el registro de auditoría correspondiente (con resultado `PERMITIDO` o `DENEGADO`) que se persiste a través del Repository de auditoría, garantizando consistencia, seguridad y trazabilidad en cada operación.

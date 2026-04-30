@@ -189,3 +189,27 @@ El sistema deberá implementar un control estricto sobre los estados de los repo
 - El sistema genera reportes de auditoría que muestran todas las transiciones de estado de un reporte.
 
 ---
+
+## RNF-10: Control de Acceso a la Consulta de Registros de Auditoría
+
+> **Referencia:** [`Auditoria.md`, sección 6](../Diseño%20y%20arquitectura/Auditoria.md#6-política-de-acceso-a-los-registros-de-auditoría).
+
+**Descripción:**
+El sistema debe restringir la consulta de registros de auditoría exclusivamente al rol Administrador, garantizando que el historial de eventos del sistema sea accesible únicamente para el personal autorizado y que los registros permanezcan inmutables para todos los roles, incluido el propio Administrador.
+
+**Restricciones:**
+
+- Solo el rol `ADMINISTRADOR` puede consultar registros de auditoría; los roles `TERAPEUTA` y `SUPERVISOR` no tienen acceso bajo ninguna circunstancia.
+- Los registros son de solo lectura: no se permiten operaciones de modificación ni eliminación desde ninguna interfaz del sistema.
+- La base de datos debe restringir las operaciones sobre `registro_auditoria` a únicamente `INSERT`.
+- La consulta debe soportar los filtros definidos en `Auditoria.md`, sección 6.3: `idUsuario`, `fechaDesde`, `fechaHasta`, `accion`, `recurso`, `idRecurso` y `resultado`.
+- La consulta de auditoría forma parte del módulo de administración del sistema; no corresponde a un módulo separado.
+
+**Criterios de aceptación:**
+
+- Un Administrador autenticado puede consultar el listado de registros de auditoría y aplicar cualquier combinación de los filtros disponibles.
+- Un Terapeuta o Supervisor autenticado recibe respuesta de acceso denegado (`403`) al intentar consultar los registros de auditoría.
+- Ningún usuario puede modificar ni eliminar un registro de auditoría desde la interfaz del sistema.
+- Los registros persisten aunque el usuario referenciado en `id_usuario` sea dado de baja del sistema (garantizado por la ausencia de FK hacia `usuario`, conforme a `Diseño_Base_De_Datos.md`).
+
+---

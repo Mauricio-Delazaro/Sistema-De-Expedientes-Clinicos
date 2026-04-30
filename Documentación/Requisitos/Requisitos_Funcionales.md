@@ -177,6 +177,30 @@ La información registrada debe quedar asociada al expediente clínico del pacie
 - El sistema no permite guardar el acuerdo si el paciente no existe o si faltan campos obligatorios definidos para el consentimiento.
 - Al guardar correctamente, el documento queda visible dentro del expediente del paciente.
 
+### RF-12 Consulta de registros de auditoría
+
+**Actor:** Administrador
+
+**Descripción:** El sistema debe permitir al Administrador consultar el listado completo de registros de auditoría generados por el sistema, con la posibilidad de aplicar filtros opcionales para acotar los resultados.
+Los registros presentados deben incluir al menos:
+- Identificador del log
+- Identificador y rol del usuario que realizó la acción
+- Tipo de acción realizada
+- Recurso afectado y su identificador
+- Fecha y hora del evento
+- Resultado de la operación (`PERMITIDO` o `DENEGADO`)
+
+**Precondiciones:**
+- El Administrador está autenticado en el sistema.
+
+**Criterios de aceptación:**
+- El sistema presenta el listado de registros de auditoría con todos sus campos.
+- El sistema permite aplicar de forma opcional cualquier combinación de los filtros: `idUsuario`, rango de fechas, `accion`, `recurso`, `idRecurso` y `resultado`.
+- Los registros mostrados no pueden ser modificados ni eliminados desde la interfaz.
+- El sistema deniega el acceso a cualquier usuario que no tenga rol `ADMINISTRADOR`.
+
+---
+
 ### RF - 11 Registro de expediente clínico:
 
 **Descripción:** 
