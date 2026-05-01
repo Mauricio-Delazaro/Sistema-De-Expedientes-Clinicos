@@ -66,3 +66,33 @@ Periodo: 16 de abril - 22 de abril
 
 - Mauricio De lázaro
 	- [x] Reescritura de criterios de aceptación de los requisitos funcionales para hacerlos medibles, verificables y testables.
+
+## Semana 4
+Periodo: 23 de abril - 30 de abril
+
+### Tabla de avance semanal
+
+| Nombre del integrante   | Issues asignados | Issues completados a tiempo | Avance semanal (%) | Resumen de actividades |
+|-------------------------|------------------|-----------------------------|--------------------|------------------------|
+| Christopher May         | 1                | 1                           | 20%                | Se definió la política de acceso a los registros de auditoría, especificando actores autorizados, alcance de consulta, filtros disponibles y condiciones de solo lectura para mantener la seguridad del sistema. |
+| Mauricio De lázaro      | 1                | 1                           | 20%                | Se elaboró la especificación de la API REST del sistema, documentando endpoints, métodos HTTP, parámetros, cuerpos de request y response, códigos de estado y autorizaciones por rol. |
+| Mijail Manrique         | 1                | 1                           | 20%                | Se elaboraron diagramas de secuencia UML para los flujos críticos del sistema, incluyendo acceso a expediente clínico, ciclo de vida del reporte de sesión e intento de acceso no autorizado. |
+| Ángel Zúñiga            | 1                | 1                           | 20%                | Se corrigió la definición de clases del sistema y se actualizó el diagrama DCDS.png para reflejar las relaciones N:M, la entidad Expediente independiente y los atributos requeridos por el modelo. |
+| Adrián Chuc             | 1                | 1                           | 20%                | Se corrigió el diccionario de datos para eliminar inconsistencias estructurales, ajustar relaciones entre entidades y alinear atributos, estados y restricciones con las reglas de negocio. |
+
+### Checklist de actividades
+
+- Christopher May
+	- [x] Definición de la política de acceso a los registros de auditoría, incluyendo actores autorizados, alcance de consulta, filtros disponibles y condiciones de solo lectura.
+
+- Mauricio De lázaro
+	- [x] Elaboración de la especificación de la API REST, con endpoints, métodos HTTP, parámetros, cuerpos de request/response, códigos de estado y autorización por rol.
+
+- Mijail Manrique
+	- [x] Elaboración de diagramas de secuencia UML para los flujos críticos del sistema.
+
+- Ángel Zúñiga
+	- [x] Corrección de la definición de clases del sistema y actualización del diagrama DCDS.png para reflejar el modelo corregido.
+
+- Adrián Chuc
+	- [x] Corrección del diccionario de datos para resolver inconsistencias estructurales y alinear el modelo con las reglas de negocio.
