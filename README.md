@@ -14,7 +14,9 @@ Este proyecto se enfoca en el desarrollo de un módulo para la gestión de exped
 - **Modelado y datos**
     - [Estructura del Expediente Clínico](/Documentación/Modelado%20y%20datos/Estructura_Del_Expediente_Clínico.md)
     - [Diccionario de datos](/Documentación/Modelado%20y%20datos/Diccionario_Datos.md)
+    - [Especificación de la API REST](/Documentación/Modelado%20y%20datos/Especificacion_Api_Endpoints.md)
     - [Modelo de estados](/Documentación/Modelado%20y%20datos/Modelo_De_Estados.md)
+    - [Reglas de negocio](/Documentación/Modelado%20y%20datos/Reglas_De_Negocio.md)
     - [Definición de clases del sistema](/Documentación/Modelado%20y%20datos/Definicion_Clases_Del_Sistema.md)
 
 - **Diseño y arquitectura**
