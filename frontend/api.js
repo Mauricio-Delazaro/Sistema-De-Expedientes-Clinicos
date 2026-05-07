@@ -1,7 +1,4 @@
-const API_BASE = 'http://localhost:8080/api/v1';
-
-// URL del módulo de autenticación — ajustar al puerto real del otro equipo
-const AUTH_URL = 'http://localhost:8081';
+const API_BASE = '/api/v1';
 
 const Token = {
   get: () => localStorage.getItem('jwt'),
