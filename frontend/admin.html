@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administrador — Expedientes Clínicos</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">Sistema Clínico<span>Administrador</span></div>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" id="nav-crear" onclick="irA('crear')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Crear expediente
+      </button>
+      <button class="nav-item" id="nav-gestionar" onclick="irA('gestionar')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Gestionar expediente
+      </button>
+      <button class="nav-item" id="nav-auditoria" onclick="irA('auditoria')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Auditoría
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user" id="sidebar-user"><strong>—</strong>Administrador</div>
+      <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center" onclick="logout()">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar"><h1 id="topbar-title">Crear expediente</h1></div>
+    <div class="content">
+
+      <!-- CU-10: Crear expediente -->
+      <div id="view-crear">
+        <div class="card" style="max-width:580px">
+          <h2>Nuevo expediente clínico</h2>
+          <p style="margin-bottom:1rem;margin-top:.25rem">Busca al paciente y terapeuta por nombre para asignarlos.</p>
+          <form id="form-crear-exp" onsubmit="crearExpediente(event)">
+            <div class="form-grid">
+              <div class="field">
+                <label>Paciente *</label>
+                <input type="text" id="ce-paciente-nombre" list="list-pacientes" required
+                       placeholder="Nombre del paciente…" oninput="sincronizarId('paciente')">
+                <datalist id="list-pacientes"></datalist>
+                <input type="hidden" id="ce-paciente-id">
+              </div>
+              <div class="field">
+                <label>Terapeuta *</label>
+                <input type="text" id="ce-terapeuta-nombre" list="list-terapeutas" required
+                       placeholder="Nombre del terapeuta…" oninput="sincronizarId('terapeuta')">
+                <datalist id="list-terapeutas"></datalist>
+                <input type="hidden" id="ce-terapeuta-id">
+              </div>
+              <div class="field form-full">
+                <label>Próxima cita</label>
+                <input type="datetime-local" id="ce-cita">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="btn-crear-exp">Crear expediente</button>
+              <button type="button" class="btn btn-ghost" onclick="limpiarFormCrear()">Limpiar</button>
+            </div>
+          </form>
+        </div>
+        <div id="resultado-crear" style="margin-top:1rem"></div>
+      </div>
+
+      <!-- Gestionar expediente -->
+      <div id="view-gestionar" style="display:none">
+        <div class="card" style="max-width:440px;margin-bottom:1rem">
+          <h2>Buscar expediente</h2>
+          <div style="display:flex;gap:.5rem;margin-top:.5rem">
+            <input type="number" id="g-idExp" placeholder="ID del expediente" style="flex:1">
+            <button class="btn btn-primary" onclick="buscarExpediente()">Buscar</button>
+          </div>
+        </div>
+
+        <div id="panel-expediente" style="display:none">
+
+          <!-- Info + estado -->
+          <div class="card" style="margin-bottom:1rem">
+            <div class="section-header" id="gexp-header"></div>
+            <div class="detail-grid" id="gexp-info" style="margin:.75rem 0 1rem"></div>
+            <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+              <label style="font-size:.8rem;font-weight:500;color:var(--muted)">Estado:</label>
+              <select id="g-estado" style="width:160px">
+                <option value="ACTIVO">ACTIVO</option>
+                <option value="ARCHIVADO">ARCHIVADO</option>
+              </select>
+              <button class="btn btn-primary btn-sm" onclick="cambiarEstado()">Actualizar estado</button>
+            </div>
+          </div>
+
+          <!-- CU-11: Entrevista socioeconómica -->
+          <div class="card" style="margin-bottom:1rem">
+            <div class="section-header">
+              <h2>Entrevista socioeconómica</h2>
+              <span id="badge-entrevista"></span>
+            </div>
+            <div id="entrevista-existente" style="display:none;margin-bottom:.75rem"></div>
+            <form id="form-entrevista" onsubmit="registrarEntrevista(event)">
+              <div class="form-grid">
+                <div class="field">
+                  <label>Ingreso familiar (MXN) *</label>
+                  <input type="number" id="e-ingreso" step="0.01" min="0" required placeholder="8500.00">
+                </div>
+                <div class="field">
+                  <label>Gasto en alimentación (MXN) *</label>
+                  <input type="number" id="e-gasto" step="0.01" min="0" required placeholder="2000.00">
+                </div>
+                <div class="field">
+                  <label>Lugar de procedencia *</label>
+                  <input type="text" id="e-lugar" required maxlength="100" placeholder="Ciudad de México, CDMX">
+                </div>
+                <div class="field">
+                  <label>Estado de salud familiar *</label>
+                  <input type="text" id="e-salud" required maxlength="50" placeholder="Sin enfermedades crónicas">
+                </div>
+                <div class="field form-full">
+                  <label>Vivienda</label>
+                  <textarea id="e-vivienda" rows="2" maxlength="1000" placeholder="Describe el tipo de vivienda..."></textarea>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-sm" id="btn-guardar-entrevista">Guardar entrevista</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- CU-12: Consentimiento informado -->
+          <div class="card">
+            <div class="section-header">
+              <h2>Consentimiento informado</h2>
+              <span id="badge-consentimiento"></span>
+            </div>
+            <div id="consentimiento-existente" style="display:none;margin-bottom:.75rem"></div>
+            <form id="form-consentimiento" onsubmit="registrarConsentimiento(event)">
+              <div class="form-grid">
+                <div class="field form-full">
+                  <label>Cuerpo del texto *</label>
+                  <textarea id="c-cuerpo" rows="4" required placeholder="Texto legal del consentimiento informado..."></textarea>
+                </div>
+                <div class="field form-full">
+                  <label>Acuerdo de confidencialidad *</label>
+                  <textarea id="c-acuerdo" rows="3" required placeholder="El personal clínico se compromete a proteger la privacidad..."></textarea>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-sm" id="btn-guardar-consent">Guardar consentimiento</button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- CU-13: Auditoría -->
+      <div id="view-auditoria" style="display:none">
+        <div class="card" style="margin-bottom:1rem">
+          <h2>Filtros</h2>
+          <div class="filters" style="margin-top:.5rem;margin-bottom:0">
+            <input type="text" id="a-nombre" placeholder="Nombre del usuario…" oninput="filtrarAuditoria()" style="min-width:200px">
+            <input type="datetime-local" id="a-desde" title="Fecha desde" onchange="filtrarAuditoria()">
+            <input type="datetime-local" id="a-hasta" title="Fecha hasta" onchange="filtrarAuditoria()">
+            <select id="a-accion" onchange="filtrarAuditoria()" style="min-width:200px">
+              <option value="">— Acción —</option>
+              <option>CONSULTAR_EXPEDIENTE</option><option>MODIFICAR_EXPEDIENTE</option>
+              <option>CAMBIAR_ESTADO_EXPEDIENTE</option><option>REGISTRAR_ENTREVISTA</option>
+              <option>REGISTRAR_CONSENTIMIENTO</option><option>REGISTRAR_REPORTE</option>
+              <option>MODIFICAR_REPORTE</option><option>ENVIAR_REPORTE</option>
+              <option>APROBAR_REPORTE</option><option>RECHAZAR_REPORTE</option>
+            </select>
+            <select id="a-resultado" onchange="filtrarAuditoria()" style="min-width:130px">
+              <option value="">— Resultado —</option>
+              <option>PERMITIDO</option><option>DENEGADO</option>
+            </select>
+            <button class="btn btn-ghost btn-sm" onclick="limpiarAuditoria()">Limpiar</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Usuario</th><th>Rol</th><th>Acción</th><th>Recurso</th><th>Fecha y hora</th><th>Resultado</th></tr>
+            </thead>
+            <tbody id="tabla-auditoria"><tr><td colspan="6" class="table-empty"><span class="spinner"></span></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="api.js"></script>
+<script>
+  let expGestionandoId = null;
+  let pacientesMap = {};   // id → nombre
+  let terapeutasMap = {};
+  let usuariosMap = {};    // id → nombre (todos, para auditoría)
+  let auditoriaData = [];
+  let datalistPacientes = [];
+  let datalistTerapeutas = [];
+
+  // ── Init ──
+  (function () {
+    recibirToken('ADMINISTRADOR');
+    if (!checkAuth('ADMINISTRADOR')) return;
+    const u = User.get();
+    document.getElementById('sidebar-user').innerHTML = `<strong>${u.nombre}</strong>Administrador`;
+    cargarUsuariosParaDatalist();
+  })();
+
+  // ── Navegación ──
+  function irA(vista) {
+    ['crear','gestionar','auditoria'].forEach(v => {
+      document.getElementById('view-' + v).style.display = v === vista ? '' : 'none';
+      document.getElementById('nav-' + v).classList.toggle('active', v === vista);
+    });
+    const t = { crear: 'Crear expediente', gestionar: 'Gestionar expediente', auditoria: 'Registros de auditoría' };
+    document.getElementById('topbar-title').textContent = t[vista];
+    if (vista === 'auditoria' && !auditoriaData.length) cargarAuditoria();
+  }
+
+  // ── Cargar usuarios para datalist y mapa de nombres ──
+  async function cargarUsuariosParaDatalist() {
+    try {
+      const todos = await api('GET', '/administradores/usuarios') || [];
+      todos.forEach(u => { usuariosMap[u.id] = u.nombre; });
+
+      datalistPacientes  = todos.filter(u => u.tipo === 'PACIENTE');
+      datalistTerapeutas = todos.filter(u => u.tipo === 'TERAPEUTA');
+
+      const dlPac = document.getElementById('list-pacientes');
+      datalistPacientes.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.nombre;
+        opt.dataset.id = p.id;
+        dlPac.appendChild(opt);
+        pacientesMap[p.nombre] = p.id;
+      });
+
+      const dlTer = document.getElementById('list-terapeutas');
+      datalistTerapeutas.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t.nombre;
+        opt.dataset.id = t.id;
+        dlTer.appendChild(opt);
+        terapeutasMap[t.nombre] = t.id;
+      });
+    } catch (e) { showToast('No se pudo cargar la lista de usuarios', 'error'); }
+  }
+
+  function sincronizarId(tipo) {
+    if (tipo === 'paciente') {
+      const nombre = document.getElementById('ce-paciente-nombre').value;
+      document.getElementById('ce-paciente-id').value = pacientesMap[nombre] || '';
+    } else {
+      const nombre = document.getElementById('ce-terapeuta-nombre').value;
+      document.getElementById('ce-terapeuta-id').value = terapeutasMap[nombre] || '';
+    }
+  }
+
+  function limpiarFormCrear() {
+    document.getElementById('form-crear-exp').reset();
+    document.getElementById('ce-paciente-id').value = '';
+    document.getElementById('ce-terapeuta-id').value = '';
+    document.getElementById('resultado-crear').innerHTML = '';
+  }
+
+  // ── CU-10: Crear expediente ──
+  async function crearExpediente(e) {
+    e.preventDefault();
+    const idPaciente  = parseInt(document.getElementById('ce-paciente-id').value);
+    const idTerapeuta = parseInt(document.getElementById('ce-terapeuta-id').value);
+    if (!idPaciente)  { showToast('Selecciona un paciente de la lista', 'error'); return; }
+    if (!idTerapeuta) { showToast('Selecciona un terapeuta de la lista', 'error'); return; }
+
+    const btn = document.getElementById('btn-crear-exp');
+    btn.disabled = true;
+    const body = {
+      idPaciente,
+      idTerapeuta,
+      fechaProxCita: document.getElementById('ce-cita').value || null,
+    };
+    try {
+      const res = await api('POST', '/expedientes', body);
+      showToast('Expediente creado exitosamente', 'success');
+      document.getElementById('resultado-crear').innerHTML = `
+        <div class="card" style="border:1px solid #bbf7d0;background:#f0fdf4;max-width:580px">
+          <h2 style="color:#166534">Expediente registrado</h2>
+          <div class="detail-grid" style="margin-top:.5rem">
+            <div class="detail-item"><label>Paciente</label><span>${document.getElementById('ce-paciente-nombre').value}</span></div>
+            <div class="detail-item"><label>Terapeuta</label><span>${document.getElementById('ce-terapeuta-nombre').value}</span></div>
+            <div class="detail-item"><label>Estado</label><span>${badgeEstado(res.estado)}</span></div>
+          </div>
+          <button class="btn btn-primary btn-sm" style="margin-top:.75rem"
+            onclick="irA('gestionar');cargarExpedienteEnPanel(${res.idExpediente})">
+            Gestionar este expediente →
+          </button>
+        </div>`;
+      limpiarFormCrear();
+    } catch (e) { showToast(e.message, 'error'); }
+    finally { btn.disabled = false; }
+  }
+
+  // ── Buscar expediente ──
+  async function buscarExpediente() {
+    const id = document.getElementById('g-idExp').value;
+    if (!id) { showToast('Ingresa un ID de expediente', 'error'); return; }
+    await cargarExpedienteEnPanel(parseInt(id));
+  }
+
+  async function cargarExpedienteEnPanel(id) {
+    document.getElementById('g-idExp').value = id;
+    irA('gestionar');
+    try {
+      const exp = await api('GET', `/administradores/expedientes/${id}`);
+      expGestionandoId = id;
+
+      document.getElementById('gexp-header').innerHTML =
+        `<h2>${exp.paciente.nombreCompleto}</h2>${badgeEstado(exp.estado)}`;
+      document.getElementById('gexp-info').innerHTML = `
+        <div class="detail-item"><label>N° Expediente</label><span>${exp.idExpediente}</span></div>
+        <div class="detail-item"><label>Estado</label><span>${exp.estado}</span></div>
+        <div class="detail-item"><label>Próxima cita</label><span>${fmtDatetime(exp.fechaProxCita)}</span></div>`;
+      document.getElementById('g-estado').value = exp.estado;
+
+      if (exp.entrevistaSocioeconomica) {
+        document.getElementById('badge-entrevista').innerHTML = '<span class="badge badge-green">Registrada</span>';
+        document.getElementById('entrevista-existente').style.display = '';
+        document.getElementById('entrevista-existente').innerHTML =
+          `<p style="color:var(--success);font-size:.875rem">✓ Registrada el ${fmtDate(exp.entrevistaSocioeconomica.fecha)}</p>`;
+      } else {
+        document.getElementById('badge-entrevista').innerHTML = '<span class="badge badge-neutral">Pendiente</span>';
+        document.getElementById('entrevista-existente').style.display = 'none';
+      }
+
+      if (exp.informeConsentimiento) {
+        document.getElementById('badge-consentimiento').innerHTML = '<span class="badge badge-green">Registrado</span>';
+        document.getElementById('consentimiento-existente').style.display = '';
+        document.getElementById('consentimiento-existente').innerHTML =
+          `<p style="color:var(--success);font-size:.875rem">✓ Registrado el ${fmtDate(exp.informeConsentimiento.fecha)}</p>`;
+      } else {
+        document.getElementById('badge-consentimiento').innerHTML = '<span class="badge badge-neutral">Pendiente</span>';
+        document.getElementById('consentimiento-existente').style.display = 'none';
+      }
+
+      document.getElementById('panel-expediente').style.display = '';
+    } catch (e) {
+      showToast(e.message, 'error');
+      document.getElementById('panel-expediente').style.display = 'none';
+    }
+  }
+
+  // ── Cambiar estado ──
+  async function cambiarEstado() {
+    if (!expGestionandoId) return;
+    try {
+      await api('PATCH', `/expedientes/${expGestionandoId}/estado`, {
+        estado: document.getElementById('g-estado').value
+      });
+      showToast('Estado actualizado', 'success');
+      await cargarExpedienteEnPanel(expGestionandoId);
+    } catch (e) { showToast(e.message, 'error'); }
+  }
+
+  // ── CU-11: Entrevista ──
+  async function registrarEntrevista(e) {
+    e.preventDefault();
+    if (!expGestionandoId) return;
+    const btn = document.getElementById('btn-guardar-entrevista');
+    btn.disabled = true;
+    try {
+      await api('POST', `/expedientes/${expGestionandoId}/entrevista-socioeconomica`, {
+        ingresoFamiliar:    parseFloat(document.getElementById('e-ingreso').value),
+        gastoAlimentacion:  parseFloat(document.getElementById('e-gasto').value),
+        lugarProcedencia:   document.getElementById('e-lugar').value,
+        estadoSaludFamiliar: document.getElementById('e-salud').value,
+        vivienda:           document.getElementById('e-vivienda').value || null,
+      });
+      showToast('Entrevista registrada', 'success');
+      document.getElementById('form-entrevista').reset();
+      await cargarExpedienteEnPanel(expGestionandoId);
+    } catch (e) { showToast(e.message, 'error'); }
+    finally { btn.disabled = false; }
+  }
+
+  // ── CU-12: Consentimiento ──
+  async function registrarConsentimiento(e) {
+    e.preventDefault();
+    if (!expGestionandoId) return;
+    const btn = document.getElementById('btn-guardar-consent');
+    btn.disabled = true;
+    try {
+      await api('POST', `/expedientes/${expGestionandoId}/consentimiento`, {
+        cuerpoDelTexto:       document.getElementById('c-cuerpo').value,
+        acuerdoConfidencial:  document.getElementById('c-acuerdo').value,
+      });
+      showToast('Consentimiento registrado', 'success');
+      document.getElementById('form-consentimiento').reset();
+      await cargarExpedienteEnPanel(expGestionandoId);
+    } catch (e) { showToast(e.message, 'error'); }
+    finally { btn.disabled = false; }
+  }
+
+  // ── CU-13: Auditoría ──
+  async function cargarAuditoria() {
+    const tbody = document.getElementById('tabla-auditoria');
+    tbody.innerHTML = '<tr><td colspan="6" class="table-empty"><span class="spinner"></span></td></tr>';
+    try {
+      auditoriaData = await api('GET', '/auditoria') || [];
+      filtrarAuditoria();
+    } catch (e) {
+      showToast(e.message, 'error');
+      tbody.innerHTML = '<tr><td colspan="6" class="table-empty">Error al cargar registros</td></tr>';
+    }
+  }
+
+  function filtrarAuditoria() {
+    const nombre   = document.getElementById('a-nombre').value.toLowerCase();
+    const desde    = document.getElementById('a-desde').value;
+    const hasta    = document.getElementById('a-hasta').value;
+    const accion   = document.getElementById('a-accion').value;
+    const resultado = document.getElementById('a-resultado').value;
+
+    const lista = auditoriaData.filter(r => {
+      const nombreUsuario = (usuariosMap[r.idUsuario] || '').toLowerCase();
+      if (nombre   && !nombreUsuario.includes(nombre)) return false;
+      if (desde    && r.fechaHora < desde.replace('T', ' ')) return false;
+      if (hasta    && r.fechaHora > hasta.replace('T', ' ')) return false;
+      if (accion   && r.accion   !== accion)   return false;
+      if (resultado && r.resultado !== resultado) return false;
+      return true;
+    });
+
+    const tbody = document.getElementById('tabla-auditoria');
+    if (!lista.length) {
+      tbody.innerHTML = '<tr><td colspan="6" class="table-empty">Sin registros para los filtros indicados</td></tr>';
+      return;
+    }
+    tbody.innerHTML = lista.map(r => `
+      <tr>
+        <td><strong>${usuariosMap[r.idUsuario] || 'ID ' + r.idUsuario}</strong></td>
+        <td>${r.rolUsuario}</td>
+        <td style="font-size:.8rem">${r.accion}</td>
+        <td>${r.recurso}</td>
+        <td style="white-space:nowrap">${fmtDatetime(r.fechaHora)}</td>
+        <td>${badgeEstado(r.resultado)}</td>
+      </tr>`).join('');
+  }
+
+  function limpiarAuditoria() {
+    ['a-nombre','a-desde','a-hasta'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('a-accion').value   = '';
+    document.getElementById('a-resultado').value = '';
+    filtrarAuditoria();
+  }
+</script>
+</body>
+</html>

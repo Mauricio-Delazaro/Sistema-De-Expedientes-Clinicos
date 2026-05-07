@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terapeuta — Expedientes Clínicos</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">Sistema Clínico<span>Terapeuta</span></div>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" id="nav-pacientes" onclick="irA('pacientes')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        Mis Pacientes
+      </button>
+      <button class="nav-item" id="nav-expediente" onclick="irA('expediente')" disabled style="opacity:.4;cursor:default">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Expediente
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user" id="sidebar-user"><strong>—</strong>Terapeuta</div>
+      <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center" onclick="logout()">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <h1 id="topbar-title">Mis Pacientes</h1>
+    </div>
+    <div class="content">
+
+      <!-- Vista: Pacientes -->
+      <div id="view-pacientes">
+        <!-- Stat cards -->
+        <div class="stat-grid" id="stat-pacientes">
+          <div class="stat-card">
+            <div class="stat-card-icon blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            </div>
+            <div class="stat-card-body">
+              <div class="stat-card-value" id="stat-total-pacientes">—</div>
+              <div class="stat-card-label">Pacientes asignados</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon yellow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="stat-card-body">
+              <div class="stat-card-value" id="stat-reportes-pendientes">—</div>
+              <div class="stat-card-label">Reportes por enviar</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-header">
+            <h2>Pacientes asignados</h2>
+            <button class="btn btn-ghost btn-sm" onclick="cargarPacientes()">↻ Actualizar</button>
+          </div>
+          <div class="filters">
+            <input type="text" id="f-nombre" placeholder="Buscar por nombre…" oninput="filtrarPacientes()" style="min-width:200px">
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Nombre del paciente</th><th>Estado</th><th>Acciones</th></tr></thead>
+              <tbody id="tabla-pacientes"><tr><td colspan="3" class="table-empty"><span class="spinner"></span></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vista: Expediente -->
+      <div id="view-expediente" style="display:none">
+        <div class="card" id="exp-info"></div>
+
+        <!-- Documentos -->
+        <div class="section">
+          <h2>Documentos del expediente</h2>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-top:.75rem">
+            <div class="card" id="doc-entrevista"></div>
+            <div class="card" id="doc-consentimiento"></div>
+          </div>
+        </div>
+
+        <!-- Reportes -->
+        <div class="section">
+          <div class="section-header">
+            <h2>Reportes de sesión</h2>
+            <button class="btn btn-primary btn-sm" onclick="abrirModalReporte()">+ Nuevo reporte</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Fecha de sesión</th><th>Duración</th><th>Estado</th><th>Acciones</th></tr></thead>
+              <tbody id="tabla-reportes"><tr><td colspan="4" class="table-empty">Sin reportes</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nuevo / Editar Reporte -->
+<div class="modal-backdrop" id="modal-reporte">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-reporte-title">Nuevo reporte de sesión</h2>
+      <button class="modal-close" onclick="cerrarModal('modal-reporte')">✕</button>
+    </div>
+    <form id="form-reporte" onsubmit="guardarReporte(event)" class="form-grid">
+      <div class="field">
+        <label>Fecha de sesión *</label>
+        <input type="date" id="r-fechaSesion" required>
+      </div>
+      <div class="field">
+        <label>Duración (min)</label>
+        <input type="number" id="r-duracion" min="1" placeholder="60">
+      </div>
+      <div class="field form-full">
+        <label>Observaciones clínicas *</label>
+        <textarea id="r-observaciones" required placeholder="Describe el estado del paciente, técnicas usadas..."></textarea>
+      </div>
+      <div class="field form-full">
+        <label>Comentarios del terapeuta</label>
+        <textarea id="r-comentarios" placeholder="Notas adicionales..."></textarea>
+      </div>
+      <input type="hidden" id="r-id">
+      <div class="modal-actions form-full" style="margin-top:0">
+        <button type="button" class="btn btn-ghost" onclick="cerrarModal('modal-reporte')">Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="btn-guardar-reporte">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Ver Reporte -->
+<div class="modal-backdrop" id="modal-ver-reporte">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-header">
+      <h2>Detalle del reporte</h2>
+      <button class="modal-close" onclick="cerrarModal('modal-ver-reporte')">✕</button>
+    </div>
+    <div id="detalle-reporte"></div>
+    <div class="modal-actions" id="detalle-acciones"></div>
+  </div>
+</div>
+
+<script src="api.js"></script>
+<script>
+  let expActual = null;
+  let reporteEditandoId = null;
+  let pacientesData = [];
+
+  // ── Init ──
+  (function () {
+    recibirToken('TERAPEUTA');
+    if (!checkAuth('TERAPEUTA')) return;
+    const u = User.get();
+    document.getElementById('sidebar-user').innerHTML = `<strong>${u.nombre}</strong>Terapeuta`;
+    cargarPacientes();
+  })();
+
+  // ── Navegación ──
+  function irA(vista) {
+    document.getElementById('view-pacientes').style.display  = vista === 'pacientes'  ? '' : 'none';
+    document.getElementById('view-expediente').style.display = vista === 'expediente' ? '' : 'none';
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('nav-' + vista)?.classList.add('active');
+    const titulos = { pacientes: 'Mis Pacientes', expediente: 'Expediente Clínico' };
+    document.getElementById('topbar-title').textContent = titulos[vista] || '';
+  }
+
+  // ── Listar pacientes ──
+  async function cargarPacientes() {
+    const tbody = document.getElementById('tabla-pacientes');
+    tbody.innerHTML = '<tr><td colspan="3" class="table-empty"><span class="spinner"></span></td></tr>';
+    try {
+      pacientesData = await api('GET', '/terapeutas/mis-pacientes') || [];
+
+      // Stats: contar reportes CREADO/RECHAZADO requiere cargar expedientes individualmente — aquí sólo contamos pacientes
+      document.getElementById('stat-total-pacientes').textContent = pacientesData.length;
+      document.getElementById('stat-reportes-pendientes').textContent = '—';
+
+      renderFilaPacientes(pacientesData);
+    } catch (e) {
+      showToast(e.message, 'error');
+      tbody.innerHTML = '<tr><td colspan="3" class="table-empty">Error al cargar</td></tr>';
+    }
+  }
+
+  function filtrarPacientes() {
+    const q = document.getElementById('f-nombre').value.toLowerCase();
+    const filtrados = q ? pacientesData.filter(p => p.nombreCompleto.toLowerCase().includes(q)) : pacientesData;
+    renderFilaPacientes(filtrados);
+  }
+
+  function renderFilaPacientes(lista) {
+    const tbody = document.getElementById('tabla-pacientes');
+    if (!lista.length) {
+      tbody.innerHTML = '<tr><td colspan="3" class="table-empty">Sin resultados</td></tr>';
+      return;
+    }
+    tbody.innerHTML = lista.map(p => `
+      <tr>
+        <td><strong>${p.nombreCompleto}</strong></td>
+        <td><span class="badge badge-green">Activo</span></td>
+        <td><button class="btn btn-primary btn-sm" onclick="cargarExpediente(${p.idExpediente})">Ver expediente</button></td>
+      </tr>`).join('');
+  }
+
+  // ── Ver expediente ──
+  async function cargarExpediente(id) {
+    try {
+      const exp = await api('GET', `/expedientes/${id}`);
+      expActual = exp;
+
+      const navExp = document.getElementById('nav-expediente');
+      navExp.removeAttribute('disabled');
+      navExp.style.opacity = '';
+      navExp.style.cursor = '';
+      irA('expediente');
+
+      document.getElementById('exp-info').innerHTML = `
+        <div class="section-header">
+          <h2>${exp.paciente.nombreCompleto}</h2>
+          ${badgeEstado(exp.estado)}
+        </div>
+        <div class="detail-grid" style="margin-top:.75rem">
+          <div class="detail-item"><label>Estado del expediente</label><span>${exp.estado}</span></div>
+          <div class="detail-item"><label>Próxima cita</label><span>${fmtDatetime(exp.fechaProxCita)}</span></div>
+        </div>`;
+
+      renderDocumento('doc-entrevista', exp.entrevistaSocioeconomica, 'Entrevista socioeconómica');
+      renderDocumento('doc-consentimiento', exp.informeConsentimiento, 'Consentimiento informado');
+      renderTablaReportes(exp.reportesSesion || []);
+
+    } catch (e) { showToast(e.message, 'error'); }
+  }
+
+  function renderDocumento(id, doc, nombre) {
+    const el = document.getElementById(id);
+    if (doc) {
+      el.innerHTML = `
+        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          <h3 style="margin:0;color:var(--success)">${nombre}</h3>
+        </div>
+        <p style="color:var(--text);font-size:.875rem">Registrado el ${fmtDate(doc.fecha)}</p>`;
+    } else {
+      el.innerHTML = `
+        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <h3 style="margin:0">${nombre}</h3>
+        </div>
+        <p>Pendiente de registro</p>`;
+    }
+  }
+
+  function renderTablaReportes(reportes) {
+    const tbody = document.getElementById('tabla-reportes');
+    if (!reportes.length) {
+      tbody.innerHTML = '<tr><td colspan="4" class="table-empty">Sin reportes registrados</td></tr>';
+      return;
+    }
+    tbody.innerHTML = reportes.map(r => `
+      <tr>
+        <td>${fmtDate(r.fechaSesion)}</td>
+        <td>—</td>
+        <td>${badgeEstado(r.estado)}</td>
+        <td style="display:flex;gap:.35rem;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="verReporte(${r.idDocumento})">Ver</button>
+          ${r.estado === 'CREADO'    ? `<button class="btn btn-primary btn-sm" onclick="enviarReporte(${r.idDocumento})">Enviar</button>` : ''}
+          ${r.estado === 'RECHAZADO' ? `<button class="btn btn-ghost btn-sm" onclick="editarReporte(${r.idDocumento})">Editar</button><button class="btn btn-primary btn-sm" onclick="enviarReporte(${r.idDocumento})">Reenviar</button>` : ''}
+        </td>
+      </tr>`).join('');
+  }
+
+  // ── Crear reporte ──
+  function abrirModalReporte() {
+    reporteEditandoId = null;
+    document.getElementById('modal-reporte-title').textContent = 'Nuevo reporte de sesión';
+    document.getElementById('form-reporte').reset();
+    document.getElementById('r-id').value = '';
+    abrirModal('modal-reporte');
+  }
+
+  // ── Editar reporte rechazado ──
+  async function editarReporte(id) {
+    try {
+      const r = await api('GET', `/reportes/${id}`);
+      reporteEditandoId = id;
+      document.getElementById('modal-reporte-title').textContent = 'Modificar reporte rechazado';
+      document.getElementById('r-fechaSesion').value  = r.fechaSesion;
+      document.getElementById('r-duracion').value     = r.duracionSesion || '';
+      document.getElementById('r-observaciones').value = r.observacionesClinicas;
+      document.getElementById('r-comentarios').value   = r.comentariosTerapeuta || '';
+      document.getElementById('r-id').value = id;
+
+      if (r.comentariosSupervisor) {
+        const aviso = document.createElement('div');
+        aviso.style.cssText = 'background:#fee2e2;border:1px solid #fca5a5;border-radius:6px;padding:.6rem .9rem;margin-bottom:.75rem;font-size:.825rem;color:#7f1d1d;grid-column:1/-1';
+        aviso.innerHTML = `<strong>Observaciones del supervisor:</strong> ${r.comentariosSupervisor}`;
+        document.getElementById('form-reporte').prepend(aviso);
+      }
+      abrirModal('modal-reporte');
+    } catch (e) { showToast(e.message, 'error'); }
+  }
+
+  async function guardarReporte(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btn-guardar-reporte');
+    btn.disabled = true;
+    const body = {
+      fechaSesion: document.getElementById('r-fechaSesion').value,
+      duracionSesion: document.getElementById('r-duracion').value ? parseInt(document.getElementById('r-duracion').value) : null,
+      observacionesClinicas: document.getElementById('r-observaciones').value,
+      comentariosTerapeuta: document.getElementById('r-comentarios').value || null,
+    };
+    try {
+      if (reporteEditandoId) {
+        await api('PUT', `/reportes/${reporteEditandoId}`, body);
+        showToast('Reporte actualizado');
+      } else {
+        await api('POST', `/expedientes/${expActual.idExpediente}/reportes`, body);
+        showToast('Reporte creado');
+      }
+      cerrarModal('modal-reporte');
+      await cargarExpediente(expActual.idExpediente);
+    } catch (e) { showToast(e.message, 'error'); }
+    finally { btn.disabled = false; }
+  }
+
+  // ── Enviar reporte ──
+  async function enviarReporte(id) {
+    try {
+      await api('PATCH', `/reportes/${id}/enviar`);
+      showToast('Reporte enviado a revisión');
+      await cargarExpediente(expActual.idExpediente);
+    } catch (e) { showToast(e.message, 'error'); }
+  }
+
+  // ── Ver reporte ──
+  async function verReporte(id) {
+    try {
+      const r = await api('GET', `/reportes/${id}`);
+      document.getElementById('detalle-reporte').innerHTML = `
+        <div class="detail-grid" style="margin-bottom:1rem">
+          <div class="detail-item"><label>Estado</label><span>${badgeEstado(r.estado)}</span></div>
+          <div class="detail-item"><label>Fecha sesión</label><span>${fmtDate(r.fechaSesion)}</span></div>
+          <div class="detail-item"><label>Duración</label><span>${r.duracionSesion ? r.duracionSesion + ' min' : '—'}</span></div>
+          <div class="detail-item"><label>Creado</label><span>${fmtDatetime(r.fechaCreacion)}</span></div>
+        </div>
+        <div class="field" style="margin-bottom:.75rem"><label>Observaciones clínicas</label><p style="color:var(--text);margin-top:.25rem;line-height:1.6">${r.observacionesClinicas}</p></div>
+        ${r.comentariosTerapeuta ? `<div class="field" style="margin-bottom:.75rem"><label>Comentarios del terapeuta</label><p style="color:var(--text);margin-top:.25rem">${r.comentariosTerapeuta}</p></div>` : ''}
+        ${r.comentariosSupervisor ? `<div style="background:#fee2e2;border-radius:6px;padding:.6rem .9rem;font-size:.825rem;color:#7f1d1d"><strong>Observaciones del supervisor:</strong> ${r.comentariosSupervisor}</div>` : ''}`;
+      document.getElementById('detalle-acciones').innerHTML = '<button class="btn btn-ghost" onclick="cerrarModal(\'modal-ver-reporte\')">Cerrar</button>';
+      abrirModal('modal-ver-reporte');
+    } catch (e) { showToast(e.message, 'error'); }
+  }
+
+  // ── Helpers ──
+  function abrirModal(id) { document.getElementById(id).classList.add('open'); }
+  function cerrarModal(id) {
+    document.getElementById(id).classList.remove('open');
+    if (id === 'modal-reporte') {
+      document.getElementById('form-reporte').reset();
+      document.querySelectorAll('#form-reporte div[style]').forEach(el => el.remove());
+    }
+  }
+</script>
+</body>
+</html>

@@ -22,13 +22,13 @@ El sistema cuenta con una definición clara de clases, reglas de negocio y model
 
 ## Base de datos
 
-- **Tecnología:** MySQL
+- **Tecnología:** PostgreSQL
 
 - **Descripción:**
 Se utilizará para almacenar la información de pacientes, expedientes clínicos, usuarios y registros del sistema.
 
 - **Justificación:**
-El sistema maneja datos estructurados con relaciones claras, como se observa en el diccionario de datos y la estructura del expediente clínico. MySQL es una base de datos relacional adecuada para este tipo de información.
+El sistema maneja datos estructurados con relaciones claras, como se observa en el diccionario de datos y la estructura del expediente clínico. PostgreSQL es una base de datos relacional de código abierto con soporte robusto para restricciones de integridad, tipos de datos avanzados y alto rendimiento en entornos de producción, características necesarias para el correcto manejo de expedientes clínicos.
 
 ## Herramientas de apoyo
 
