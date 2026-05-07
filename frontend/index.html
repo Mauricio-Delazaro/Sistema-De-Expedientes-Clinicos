@@ -20,9 +20,6 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     .btn:disabled .spinner { display: inline-block; }
     .btn:disabled .btn-label { display: none; }
-    .entry-logo-img {
-      font-size: 2rem; margin-bottom: .5rem; display: block;
-    }
   </style>
 </head>
 <body>
@@ -30,21 +27,17 @@
   <div class="entry-card">
     <div class="entry-logo">Sistema Clínico</div>
     <h1 class="entry-title">Expedientes Clínicos</h1>
-    <p class="entry-sub">Ingresa tus credenciales para continuar.</p>
+    <p class="entry-sub">Ingresa tu ID de usuario para continuar.</p>
 
     <div id="errorMsg" class="login-error" role="alert"></div>
 
     <form id="loginForm" novalidate>
       <div class="field">
-        <label for="username">Usuario</label>
-        <input id="username" type="text" placeholder="nombre.apellido" autocomplete="username" required>
-      </div>
-      <div class="field">
-        <label for="password">Contraseña</label>
-        <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" required>
+        <label for="idUsuario">ID de usuario</label>
+        <input id="idUsuario" type="number" placeholder="Ej. 1" min="1" required>
       </div>
       <button id="submitBtn" type="submit" class="btn btn-primary" style="margin-top:.5rem">
-        <span class="btn-label">Iniciar sesión</span>
+        <span class="btn-label">Ingresar</span>
         <span class="spinner"></span>
       </button>
     </form>
@@ -53,13 +46,10 @@
 
 <script src="api.js"></script>
 <script>
-  // Si ya hay sesión activa, redirigir al dashboard
   (function () {
     const token = Token.get();
     const user = User.get();
-    if (token && user) {
-      redirigirPorRol(user.rol);
-    }
+    if (token && user) redirigirPorRol(user.rol);
   })();
 
   function redirigirPorRol(rol) {
@@ -81,46 +71,28 @@
     errorMsg.classList.add('visible');
   }
 
-  function ocultarError() {
-    errorMsg.classList.remove('visible');
-  }
-
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    ocultarError();
+    errorMsg.classList.remove('visible');
 
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value;
-
-    if (!username || !password) {
-      mostrarError('Por favor completa todos los campos.');
-      return;
-    }
+    const idUsuario = parseInt(document.getElementById('idUsuario').value);
+    if (!idUsuario) { mostrarError('Ingresa un ID válido.'); return; }
 
     btn.disabled = true;
-
     try {
       const res = await fetch('/api/v1/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ idUsuario }),
       });
 
-      if (res.status === 401) {
-        mostrarError('Usuario o contraseña incorrectos.');
-        return;
-      }
-
-      if (!res.ok) {
-        mostrarError('Error del servidor. Intenta de nuevo.');
-        return;
-      }
+      if (res.status === 401) { mostrarError('ID de usuario no encontrado.'); return; }
+      if (!res.ok) { mostrarError('Error del servidor. Intenta de nuevo.'); return; }
 
       const data = await res.json();
       Token.set(data.token);
       User.set({ id: String(data.idUsuario), nombre: data.nombre, rol: data.rol });
       redirigirPorRol(data.rol);
-
     } catch {
       mostrarError('No se pudo conectar con el servidor.');
     } finally {
