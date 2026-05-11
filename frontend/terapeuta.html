@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terapeuta — Expedientes Clínicos</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<div class="topbar">
+  <div class="container">
+    <div class="topbar-brand">
+      <h1>Expedientes Clínicos</h1>
+      <span class="role-tag">TERAPEUTA</span>
+    </div>
+    <a href="index.html">← Inicio</a>
+  </div>
+</div>
+
+<div class="user-bar">
+  <div class="container">
+    <label for="userId">ID de terapeuta:</label>
+    <input type="number" id="userId" placeholder="Ej. 3" min="1" autocomplete="off" autofocus />
+    <button class="btn btn-primary btn-sm" id="btnLoadPacientes">Cargar mis pacientes</button>
+    <span style="font-size:0.75rem;color:#94A3B8;">Se guarda automáticamente</span>
+  </div>
+</div>
+
+<div class="page">
+  <div class="container">
+    <div class="layout-split">
+
+      <!-- Panel izquierdo: lista de pacientes -->
+      <div class="card" style="position:sticky;top:70px;">
+        <div class="card-header">
+          <h2>Mis Pacientes</h2>
+        </div>
+        <div class="stats-grid" id="statsGrid" style="display:none;">
+          <div class="stat-item">
+            <div class="stat-value" id="statTotal">—</div>
+            <div class="stat-label">Total</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="statVisibles">—</div>
+            <div class="stat-label">Visibles</div>
+          </div>
+        </div>
+        <!-- Barra de búsqueda por nombre (oculta hasta que se carguen pacientes) -->
+        <div id="pacientesSearch" class="search-bar" style="display:none;">
+          <div class="autocomplete-wrap">
+            <input type="text" id="buscarPaciente"
+              placeholder="Buscar paciente por nombre..."
+              autocomplete="off" />
+            <div class="autocomplete-list" id="acPacientes"></div>
+          </div>
+        </div>
+
+        <div id="pacientesList">
+          <div class="empty-state" style="padding:2rem 1.5rem;">
+            <div class="empty-icon">
+              <svg width="38" height="38" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+              </svg>
+            </div>
+            <p style="margin-bottom:0.5rem;">Para comenzar:</p>
+            <ol class="step-list">
+              <li>Ingresa tu ID de terapeuta</li>
+              <li>Haz clic en <strong>Cargar mis pacientes</strong></li>
+              <li>Selecciona un paciente de la lista</li>
+            </ol>
+          </div>
+        </div>
+        <div class="status-banner" id="statusLeft"></div>
+      </div>
+
+      <!-- Panel derecho: detalle del expediente -->
+      <div id="contentPanel">
+        <div class="card">
+          <div class="card-body">
+            <div class="empty-state" style="padding:3rem 2rem;">
+              <div class="empty-icon">
+                <svg width="38" height="38" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="4" y="4" width="16" height="16" rx="2"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="14" y2="13"/><line x1="8" y1="17" x2="11" y2="17"/>
+                </svg>
+              </div>
+              <p>Selecciona un paciente para ver su expediente clínico</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nuevo / Modificar Reporte -->
+<div class="modal-overlay" id="modalReporte">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalReporteTitulo">Nuevo Reporte de Sesión</h3>
+      <button class="btn-close" onclick="closeModal('modalReporte')" aria-label="Cerrar">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <form id="formReporte" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="rfFechaSesion">Fecha de sesión <span class="req">*</span></label>
+            <input type="date" id="rfFechaSesion" required />
+          </div>
+          <div class="form-group">
+            <label for="rfDuracion">Duración (minutos)</label>
+            <input type="number" id="rfDuracion" min="1" max="480" placeholder="Ej. 60" />
+            <div class="form-hint">Opcional · Máx. 480 min.</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="rfObservaciones">Observaciones clínicas <span class="req">*</span></label>
+          <textarea id="rfObservaciones" rows="5"
+            placeholder="Describe el desarrollo de la sesión, avances, dificultades y objetivos trabajados..."
+            required></textarea>
+          <div class="char-count" id="cuentaObservaciones">0 caracteres</div>
+        </div>
+        <div class="form-group">
+          <label for="rfComentarios">Comentarios del terapeuta</label>
+          <textarea id="rfComentarios" rows="3" placeholder="Notas adicionales, recomendaciones o seguimiento..."></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <div id="mslReporte" class="modal-status-line"></div>
+      <button class="btn btn-secondary" onclick="closeModal('modalReporte')">Cancelar</button>
+      <button class="btn btn-primary" id="btnGuardarReporte">Guardar Reporte</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="js/api.js"></script>
+<script src="js/terapeuta.js"></script>
+<script>
+/* Contador de caracteres para observaciones clínicas */
+(function () {
+  var ta      = document.getElementById('rfObservaciones');
+  var counter = document.getElementById('cuentaObservaciones');
+
+  function update() {
+    var n = ta.value.length;
+    counter.textContent = n + ' caracter' + (n === 1 ? '' : 'es');
+    counter.style.color = n === 0 ? '#DC2626' : n < 20 ? '#D97706' : '#94A3B8';
+  }
+
+  ta.addEventListener('input', update);
+
+  /* Reiniciar contador cada vez que el modal se abre */
+  var modal    = document.getElementById('modalReporte');
+  var observer = new MutationObserver(function () {
+    if (modal.classList.contains('open')) update();
+  });
+  observer.observe(modal, { attributes: true, attributeFilter: ['class'] });
+
+  update();
+})();
+</script>
+</body>
+</html>

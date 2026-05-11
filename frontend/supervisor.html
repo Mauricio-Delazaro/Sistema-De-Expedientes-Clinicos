@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supervisor — Expedientes Clínicos</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<div class="topbar">
+  <div class="container">
+    <div class="topbar-brand">
+      <h1>Expedientes Clínicos</h1>
+      <span class="role-tag">SUPERVISOR</span>
+    </div>
+    <a href="index.html">← Inicio</a>
+  </div>
+</div>
+
+<div class="user-bar">
+  <div class="container">
+    <label for="userId">ID de supervisor:</label>
+    <input type="number" id="userId" placeholder="Ej. 5" min="1" autocomplete="off" />
+    <span style="font-size:0.75rem;color:#94A3B8;">Requerido para cargar reportes · Se guarda automáticamente</span>
+  </div>
+</div>
+
+<div class="page">
+  <div class="container">
+    <div class="layout-split">
+
+      <!-- Panel izquierdo: lista de reportes pendientes -->
+      <div class="card" style="position:sticky;top:70px;">
+        <div class="card-header">
+          <h2>Reportes Pendientes</h2>
+        </div>
+        <div class="stats-grid" id="statsGrid" style="display:none;">
+          <div class="stat-item">
+            <div class="stat-value" id="statTotal">—</div>
+            <div class="stat-label">Total</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="statVisibles">—</div>
+            <div class="stat-label">Visibles</div>
+          </div>
+        </div>
+        <div class="card-body" style="padding-bottom:0;">
+          <div class="form-group autocomplete-wrap">
+            <label for="filtroTerapeutaNombre">Terapeuta</label>
+            <input type="text" id="filtroTerapeutaNombre"
+              placeholder="Nombre del terapeuta..."
+              autocomplete="off" />
+            <div class="autocomplete-list" id="acTerapeutas"></div>
+            <div class="form-hint">Carga los reportes primero, luego filtra por nombre.</div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="filtroDesde">Desde</label>
+              <input type="date" id="filtroDesde" />
+            </div>
+            <div class="form-group">
+              <label for="filtroHasta">Hasta</label>
+              <input type="date" id="filtroHasta" />
+            </div>
+          </div>
+          <div style="padding-bottom:1rem;display:flex;gap:0.5rem;">
+            <button class="btn btn-primary" style="flex:1;" id="btnLoadReportes">Buscar reportes</button>
+            <button type="button" class="btn btn-secondary" id="btnLimpiarFiltros" title="Limpiar todos los filtros">Limpiar</button>
+          </div>
+        </div>
+        <div id="reportesList">
+          <div class="empty-state" style="padding:2rem 1.5rem;">
+            <div class="empty-icon">
+              <svg width="38" height="38" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/>
+              </svg>
+            </div>
+            <p style="margin-bottom:0.5rem;">Para ver reportes pendientes:</p>
+            <ol class="step-list">
+              <li>Ingresa tu ID de supervisor</li>
+              <li>Aplica filtros opcionales de fecha</li>
+              <li>Haz clic en <strong>Buscar reportes</strong></li>
+            </ol>
+          </div>
+        </div>
+        <div class="status-banner" id="statusLeft"></div>
+      </div>
+
+      <!-- Panel derecho: detalle del reporte -->
+      <div id="contentPanel">
+        <div class="card">
+          <div class="card-body">
+            <div class="empty-state" style="padding:3rem 2rem;">
+              <div class="empty-icon">
+                <svg width="38" height="38" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M15 18l-6-6 6-6"/>
+                </svg>
+              </div>
+              <p>Selecciona un reporte de la lista para revisarlo</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Confirmar aprobación -->
+<div class="modal-overlay modal-sm" id="modalAprobar">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Aprobar Reporte</h3>
+      <button class="btn-close" onclick="closeModal('modalAprobar')" aria-label="Cerrar">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirmAprobarMsg" style="font-size:0.9375rem;color:#1E293B;margin-bottom:1rem;font-weight:500;"></p>
+      <div class="alert alert-info" style="margin:0;">Una vez aprobado, el terapeuta no podrá modificar este reporte.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalAprobar')">Cancelar</button>
+      <button class="btn btn-success" id="btnConfirmarAprobar">Confirmar aprobación</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Rechazar reporte -->
+<div class="modal-overlay" id="modalRechazar">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Rechazar Reporte</h3>
+      <button class="btn-close" onclick="closeModal('modalRechazar')" aria-label="Cerrar">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div class="alert alert-info" style="margin-bottom:1rem;">
+        Indica los motivos del rechazo para que el terapeuta pueda corregir el reporte.
+      </div>
+      <div class="form-group">
+        <label for="comentariosRechazo">Retroalimentación al terapeuta <span class="req">*</span></label>
+        <textarea id="comentariosRechazo" rows="5" required
+          placeholder="Describe qué debe corregirse en el reporte..."></textarea>
+        <div class="char-count" id="cuentaRechazo">0 caracteres</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div id="mslRechazar" class="modal-status-line"></div>
+      <button class="btn btn-secondary" onclick="closeModal('modalRechazar')">Cancelar</button>
+      <button class="btn btn-danger" id="btnConfirmarRechazo">Confirmar rechazo</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="js/api.js"></script>
+<script src="js/supervisor.js"></script>
+<script>
+/* Limpiar filtros de búsqueda */
+(function () {
+  document.getElementById('btnLimpiarFiltros').addEventListener('click', function () {
+    document.getElementById('filtroTerapeutaNombre').value = '';
+    document.getElementById('filtroDesde').value           = '';
+    document.getElementById('filtroHasta').value           = '';
+  });
+})();
+
+/* Confirmación antes de aprobar (intercepta en fase de captura) */
+(function () {
+  var idAprobarPendiente = null;
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('#btnAprobar');
+    if (!btn) return;
+    e.stopImmediatePropagation();
+
+    var onclick = btn.getAttribute('onclick') || '';
+    var match   = onclick.match(/\d+/);
+    if (!match) return;
+    idAprobarPendiente = parseInt(match[0], 10);
+
+    document.getElementById('confirmAprobarMsg').textContent =
+      '¿Confirmar aprobación del reporte #' + idAprobarPendiente + '? Esta acción no se puede deshacer.';
+    openModal('modalAprobar');
+  }, true);
+
+  document.getElementById('btnConfirmarAprobar').addEventListener('click', function () {
+    closeModal('modalAprobar');
+    if (idAprobarPendiente != null) {
+      aprobarReporte(idAprobarPendiente);
+      idAprobarPendiente = null;
+    }
+  });
+})();
+
+/* Contador de caracteres para retroalimentación de rechazo */
+(function () {
+  var ta      = document.getElementById('comentariosRechazo');
+  var counter = document.getElementById('cuentaRechazo');
+  function update() {
+    var n = ta.value.length;
+    counter.textContent = n + ' caracter' + (n === 1 ? '' : 'es');
+    counter.style.color = n === 0 ? '#DC2626' : n < 15 ? '#D97706' : '#94A3B8';
+  }
+  ta.addEventListener('input', update);
+  /* Reiniciar al abrir el modal */
+  document.getElementById('modalRechazar').addEventListener('transitionend', update);
+  update();
+})();
+</script>
+</body>
+</html>
