@@ -17,6 +17,7 @@ Incluye eventos asociados a expedientes clínicos, reportes de sesión y documen
 - Cambio de estado del expediente (activo/archivado).
 - Registro de entrevista socioeconómica.
 - Registro de informe de consentimiento.
+- Consulta de expedientes con documentos pendientes (entrevista o consentimiento faltante).
 
 ### 2.3 Operaciones sobre Reportes de Sesión
 - Registro de reporte de sesión.
@@ -24,6 +25,10 @@ Incluye eventos asociados a expedientes clínicos, reportes de sesión y documen
 - Envío de reporte a revisión.
 - Aprobación de reporte.
 - Rechazo de reporte.
+
+### 2.4 Consultas Administrativas
+- Consulta de lista de terapeutas.
+- Consulta de lista de supervisores.
 
 ---
 
@@ -36,7 +41,7 @@ Cada evento de auditoría se almacena con la siguiente estructura uniforme. Esta
 | id_log | Entero autoincremental | Identificador único del registro de auditoría. |
 | id_usuario | Entero | Identificador del usuario que realizó la acción. |
 | rol_usuario | ENUM: `TERAPEUTA` \| `SUPERVISOR` \| `ADMINISTRADOR` | Rol del usuario en el sistema. |
-| accion | `CONSULTAR_EXPEDIENTE` \| `MODIFICAR_EXPEDIENTE` \| `CAMBIAR_ESTADO_EXPEDIENTE` \| `REGISTRAR_ENTREVISTA` \| `REGISTRAR_CONSENTIMIENTO` \| `REGISTRAR_REPORTE` \| `MODIFICAR_REPORTE` \| `ENVIAR_REPORTE` \| `APROBAR_REPORTE` \| `RECHAZAR_REPORTE` | Acción realizada. Debe corresponder a uno de los valores definidos. Los accesos denegados se registran con `CONSULTAR_EXPEDIENTE` y `resultado: DENEGADO`. |
+| accion | `CONSULTAR_EXPEDIENTE` \| `MODIFICAR_EXPEDIENTE` \| `CAMBIAR_ESTADO_EXPEDIENTE` \| `REGISTRAR_ENTREVISTA` \| `REGISTRAR_CONSENTIMIENTO` \| `CONSULTAR_EXPEDIENTES_PENDIENTES` \| `REGISTRAR_REPORTE` \| `MODIFICAR_REPORTE` \| `ENVIAR_REPORTE` \| `APROBAR_REPORTE` \| `RECHAZAR_REPORTE` \| `CONSULTAR_TERAPEUTAS` \| `CONSULTAR_SUPERVISORES` | Acción realizada. Debe corresponder a uno de los valores definidos. Los accesos denegados se registran con `CONSULTAR_EXPEDIENTE` y `resultado: DENEGADO`. |
 | recurso | Texto | Entidad afectada, p. ej. `Expediente`, `Reporte`. |
 | id_recurso | Texto | Identificador numérico del recurso afectado, almacenado como cadena de texto (ej. `"45"` para un expediente con id_expediente = 45). |
 | fecha_hora | ISO 8601 (UTC) | Fecha y hora del evento. |
