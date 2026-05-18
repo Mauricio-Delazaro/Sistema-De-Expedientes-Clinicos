@@ -733,6 +733,136 @@ POST /api/v1/expedientes/{idExpediente}/consentimiento
 
 ---
 
+### Consultar expedientes con documentos pendientes
+
+```
+GET /api/v1/expedientes/pendientes-documentos
+```
+
+**Autorización:** `ADMINISTRADOR`
+
+**Parámetros:** ninguno
+
+**Response 200 OK:**
+
+```json
+[
+  {
+    "idExpediente": 45,
+    "nombrePaciente": "María López García",
+    "faltaEntrevista": true,
+    "faltaConsentimiento": false
+  },
+  {
+    "idExpediente": 67,
+    "nombrePaciente": "Juan Carlos Mendoza Ruiz",
+    "faltaEntrevista": false,
+    "faltaConsentimiento": true
+  }
+]
+```
+
+| Campo                | Tipo    | Descripción |
+|----------------------|---------|-------------|
+| idExpediente         | Long    | Identificador del expediente clínico |
+| nombrePaciente       | String  | Nombre completo del paciente |
+| faltaEntrevista      | Boolean | `true` si `entrevistaSocioeconomica` es `null` |
+| faltaConsentimiento  | Boolean | `true` si `informeConsentimiento` es `null` |
+
+**Códigos de respuesta:**
+
+| Código | Significado |
+|--------|-------------|
+| 200    | Lista retornada exitosamente (puede ser vacía `[]` si todos los expedientes están completos) |
+| 403    | El usuario autenticado no tiene rol `ADMINISTRADOR` |
+
+> **Nota de privacidad:** Este endpoint retorna únicamente información administrativa no sensible (identificadores y nombres de pacientes). No expone datos clínicos, socioeconómicos, ni contenido de documentos.  
+> **Auditoría:** genera un registro `CONSULTAR_EXPEDIENTES_PENDIENTES`.
+
+---
+
+### Consultar lista de terapeutas
+
+```
+GET /api/v1/terapeutas
+```
+
+**Autorización:** `ADMINISTRADOR`
+
+**Parámetros:** ninguno
+
+**Response 200 OK:**
+
+```json
+[
+  {
+    "id": 7,
+    "nombreCompleto": "Carlos Ramírez Torres"
+  },
+  {
+    "id": 9,
+    "nombreCompleto": "Daniela Fernández Gómez"
+  }
+]
+```
+
+| Campo          | Tipo   | Descripción |
+|----------------|--------|-------------|
+| id             | Long   | Identificador del usuario terapeuta |
+| nombreCompleto | String | Nombre completo del terapeuta |
+
+**Códigos de respuesta:**
+
+| Código | Significado |
+|--------|-------------|
+| 200    | Lista retornada exitosamente (puede ser vacía `[]` si no hay terapeutas registrados) |
+| 403    | El usuario autenticado no tiene rol `ADMINISTRADOR` |
+
+> **Auditoría:** genera un registro `CONSULTAR_TERAPEUTAS`.
+
+---
+
+### Consultar lista de supervisores
+
+```
+GET /api/v1/supervisores
+```
+
+**Autorización:** `ADMINISTRADOR`
+
+**Parámetros:** ninguno
+
+**Response 200 OK:**
+
+```json
+[
+  {
+    "id": 5,
+    "nombreCompleto": "Dr. Fernando González López"
+  },
+  {
+    "id": 11,
+    "nombreCompleto": "Dra. Patricia Jiménez Ruiz"
+  }
+]
+```
+
+| Campo          | Tipo   | Descripción |
+|----------------|--------|-------------|
+| id             | Long   | Identificador del usuario supervisor |
+| nombreCompleto | String | Nombre completo del supervisor |
+
+**Códigos de respuesta:**
+
+| Código | Significado |
+|--------|-------------|
+| 200    | Lista retornada exitosamente (puede ser vacía `[]` si no hay supervisores registrados) |
+| 403    | El usuario autenticado no tiene rol `ADMINISTRADOR` |
+
+> **Auditoría:** genera un registro `CONSULTAR_SUPERVISORES`.
+
+---
+
 ## Módulo Auditoría
 
 > **Autorización formal:** La política de acceso a los registros de auditoría está definida en `Auditoria.md`, sección 6, y en `Requisitos_No_Funcionales.md` (RNF-10). Únicamente el rol `ADMINISTRADOR` puede consultar los registros; los roles `TERAPEUTA` y `SUPERVISOR` tienen acceso denegado. El requisito funcional correspondiente es RF-12 (caso de uso CU-13).
@@ -803,6 +933,9 @@ GET /api/v1/auditoria
 | RNF-01      | PATCH  | `/api/v1/expedientes/{idExpediente}/estado`                   | `ADMINISTRADOR`                 |
 | CU-11       | POST   | `/api/v1/expedientes/{idExpediente}/entrevista-socioeconomica`| `ADMINISTRADOR`                 |
 | CU-12       | POST   | `/api/v1/expedientes/{idExpediente}/consentimiento`           | `ADMINISTRADOR`                 |
+| —           | GET    | `/api/v1/expedientes/pendientes-documentos`                   | `ADMINISTRADOR`                 |
+| —           | GET    | `/api/v1/terapeutas`                                          | `ADMINISTRADOR`                 |
+| —           | GET    | `/api/v1/supervisores`                                        | `ADMINISTRADOR`                 |
 | Auditoría   | GET    | `/api/v1/auditoria`                                           | `ADMINISTRADOR`                 |
 
 ---
@@ -831,15 +964,18 @@ GET /api/v1/auditoria
 
 Cada acción de la tabla siguiente corresponde a un valor del ENUM `accion` en `registro_auditoria`. La columna "Disparado por" indica qué endpoint o flujo genera ese registro de manera automática.
 
-| Valor de `accion`          | Disparado por |
-|----------------------------|---------------|
-| `CONSULTAR_EXPEDIENTE`     | CU-02 — resultado `PERMITIDO` si el acceso es autorizado, `DENEGADO` si la evaluación ABAC lo rechaza |
-| `MODIFICAR_EXPEDIENTE`     | Modificación directa de datos del expediente |
-| `CAMBIAR_ESTADO_EXPEDIENTE`| RNF-01 (PATCH `/estado`) |
-| `REGISTRAR_ENTREVISTA`     | CU-11 |
-| `REGISTRAR_CONSENTIMIENTO` | CU-12 |
-| `REGISTRAR_REPORTE`        | CU-03 |
-| `MODIFICAR_REPORTE`        | CU-05 |
-| `ENVIAR_REPORTE`           | CU-04 |
-| `APROBAR_REPORTE`          | CU-08 |
-| `RECHAZAR_REPORTE`         | CU-09 |
+| Valor de `accion`                 | Disparado por |
+|-----------------------------------|---------------|
+| `CONSULTAR_EXPEDIENTE`            | CU-02 — resultado `PERMITIDO` si el acceso es autorizado, `DENEGADO` si la evaluación ABAC lo rechaza |
+| `MODIFICAR_EXPEDIENTE`            | Modificación directa de datos del expediente |
+| `CAMBIAR_ESTADO_EXPEDIENTE`       | RNF-01 (PATCH `/estado`) |
+| `REGISTRAR_ENTREVISTA`            | CU-11 |
+| `REGISTRAR_CONSENTIMIENTO`        | CU-12 |
+| `REGISTRAR_REPORTE`               | CU-03 |
+| `MODIFICAR_REPORTE`               | CU-05 |
+| `ENVIAR_REPORTE`                  | CU-04 |
+| `APROBAR_REPORTE`                 | CU-08 |
+| `RECHAZAR_REPORTE`                | CU-09 |
+| `CONSULTAR_EXPEDIENTES_PENDIENTES`| Endpoint `/api/v1/expedientes/pendientes-documentos` |
+| `CONSULTAR_TERAPEUTAS`            | Endpoint `/api/v1/terapeutas` |
+| `CONSULTAR_SUPERVISORES`          | Endpoint `/api/v1/supervisores` |
